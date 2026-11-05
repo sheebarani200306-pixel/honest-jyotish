@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Planet-in-House Interpretations | Honest Jyotish</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f1e8;
+    color: #30291f;
+    margin: 0;
+    padding: 16px;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    color: #704214;
+    line-height: 1.3;
+}
+
+.subtitle {
+    text-align: center;
+    color: #665b4d;
+}
+
+.card {
+    background: white;
+    padding: 18px;
+    margin: 16px 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px #00000012;
+    overflow-wrap: anywhere;
+}
+
+h2 {
+    color: #704214;
+    margin-top: 0;
+    font-size: 21px;
+}
+
+.label {
+    font-weight: bold;
+    color: #49351f;
+}
+
+.combined {
+    background: #fff8e9;
+    padding: 12px;
+    border-left: 4px solid #b18442;
+    border-radius: 5px;
+}
+
+.disclaimer {
+    background: #fff3d6;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 22px;
+}
+
+button {
+    background: #704214;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 7px;
+    font-size: 16px;
+}
+
+a {
+    color: #704214;
+    font-weight: bold;
+}
+
+.home-link {
+    display: inline-block;
+    margin: 20px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Planet-in-House Interpretations</h1>
+
+<p class="subtitle">
+Traditional Vedic astrology meanings based on your saved birth chart
+</p>
+
+<div id="birthInfo" class="card"></div>
+
+<div id="error"></div>
+
+<div id="results"></div>
+
+<div class="disclaimer">
+    <strong>Important note:</strong>
+    These interpretations describe traditional Vedic astrology
+    beliefs. Astrology is not scientifically validated as a method
+    of predicting personality or future events. These meanings are
+    for educational and cultural exploration, not guaranteed outcomes.
+</div>
+
+<a class="home-link" href="index.html">← Back to Home</a>
+
+</div>
+
+<script>
+
+// ------------------------------------
+// 1. ZODIAC SIGNS
+// ------------------------------------
+
+const signs = [
+    "Mesha",
+    "Vrishabha",
+    "Mithuna",
+    "Karka",
+    "Simha",
+    "Kanya",
+    "Tula",
+    "Vrischika",
+    "Dhanu",
+    "Makara",
+    "Kumbha",
+    "Meena"
+];
+
+const signAliases = {
+    aries: 0, mesha: 0,
+    taurus: 1, vrishabha: 1,
+    gemini: 2, mithuna: 2,
+    cancer: 3, karka: 3, karkata: 3,
+    leo: 4, simha: 4,
+    virgo: 5, kanya: 5,
+    libra: 6, tula: 6,
+    scorpio: 7, vrischika: 7, vrishchika: 7,
+    sagittarius: 8, dhanu: 8,
+    capricorn: 9, makara: 9,
+    aquarius: 10, kumbha: 10,
+    pisces: 11, meena: 11
+};
+
+
+// ------------------------------------
+// 2. PLANETS
+// ------------------------------------
+
+const planetNames = {
+    sun: "Sun",
+    moon: "Moon",
+    mars: "Mars",
+    mercury: "Mercury",
+    jupiter: "Jupiter",
+    venus: "Venus",
+    saturn: "Saturn",
+    rahu: "Rahu",
+    ketu: "Ketu"
+};
+
+const planetMeanings = {
+    sun: "identity, confidence, authority and purpose",
+    moon: "emotions, mind, comfort and nurturing",
+    mars: "energy, courage, action and determination",
+    mercury: "communication, learning, reasoning and business",
+    jupiter: "wisdom, knowledge, growth and guidance",
+    venus: "relationships, harmony, beauty and enjoyment",
+    saturn: "discipline, responsibility, patience and structure",
+    rahu: "ambition, unusual interests, worldly desires and innovation",
+    ketu: "detachment, introspection, spirituality and inner insight"
+};
+
+
+// ------------------------------------
+// 3. HOUSE MEANINGS
+// ------------------------------------
+
+const houseMeanings = [
+    "self, personality, appearance and beginnings",
+    "wealth, family, speech and personal values",
+    "communication, courage, skills and siblings",
+    "home, mother, emotional foundations and property",
+    "creativity, education, intelligence and children",
+    "work, service, health routines, debts and challenges",
+    "partnerships, marriage, agreements and business relationships",
+    "transformation, shared resources, secrets and research",
+    "higher learning, beliefs, teachers, fortune and long journeys",
+    "career, public responsibilities, reputation and achievements",
+    "income, networks, friendships and aspirations",
+    "expenses, solitude, foreign places and spiritual retreat"
+];
+
+
+// ------------------------------------
+// 4. SIGN QUALITIES
+// ------------------------------------
+
+const signQualities = [
+    "initiative, courage and independence",
+    "stability, patience and practicality",
+    "curiosity, communication and adaptability",
+    "sensitivity, care and emotional security",
+    "creativity, confidence and leadership",
+    "analysis, organisation and attention to detail",
+    "balance, cooperation and harmony",
+    "depth, determination and transformation",
+    "exploration, optimism and higher learning",
+    "discipline, ambition and responsibility",
+    "originality, independence and humanitarian interests",
+    "imagination, compassion and intuition"
+];
+
+
+// ------------------------------------
+// 5. PLANET-IN-HOUSE INTERPRETATIONS
+// ------------------------------------
+
+const planetHouseNotes = {
+
+sun: [
+    "Self-expression and personal identity may be important themes.",
+    "Attention may turn toward family values, resources and speech.",
+    "Communication and courage may become important themes.",
+    "Home life and emotional foundations may receive attention.",
+    "Creativity, learning and self-expression may be emphasised.",
+    "Service, daily responsibilities and problem-solving may be highlighted.",
+    "Partnerships and cooperation may become important themes.",
+    "Transformation, shared resources and deeper questions may attract attention.",
+    "Beliefs, higher learning and teachers may be significant themes.",
+    "Career, responsibility and public contribution may be emphasised.",
+    "Community, networks and long-term ambitions may receive attention.",
+    "Reflection, retreat and inner development may become important."
+],
+
+moon: [
+    "Emotional well-being and personal comfort may be central themes.",
+    "Emotional security may be connected with family and resources.",
+    "Communication and relationships with siblings may carry emotional importance.",
+    "Home, family and belonging may be especially meaningful.",
+    "Creativity, learning and affection may be emotionally important.",
+    "Daily routines and service may affect emotional balance.",
+    "Relationships and emotional cooperation may be important.",
+    "Emotional depth and personal transformation may be themes.",
+    "Beliefs, learning and meaningful experiences may influence the mind.",
+    "Career and public responsibilities may affect emotional life.",
+    "Friendships and group connections may provide emotional support.",
+    "Solitude, rest and reflection may be valuable."
+],
+
+mars: [
+    "Energy and initiative may be directed toward personal goals.",
+    "Determination may be applied to money and family matters.",
+    "Courage and assertive communication may be emphasised.",
+    "Energy may be directed toward home or family matters.",
+    "Competitive energy may enter creativity and learning.",
+    "Effort may be directed toward work and overcoming challenges.",
+    "Partnerships may require patience and cooperation.",
+    "Research and transformation may demand effort.",
+    "Action may be directed toward learning and travel.",
+    "Ambition may be directed toward career goals.",
+    "Energy may support group activities and long-term ambitions.",
+    "Private effort and reflection may become important."
+],
+
+mercury: [
+    "Thinking and communication may shape personal expression.",
+    "Planning and communication may connect with finances and family.",
+    "Learning, writing and communication may be prominent themes.",
+    "Thinking may focus on home and family.",
+    "Intellectual curiosity may support creativity and learning.",
+    "Analysis and organisation may be useful in work and routines.",
+    "Communication and negotiation may be important in partnerships.",
+    "Research and investigation may attract the mind.",
+    "Learning, teaching and exploring ideas may be meaningful.",
+    "Communication and planning may support career responsibilities.",
+    "Networking and exchanging ideas may support aspirations.",
+    "Reflection and private study may be valuable."
+],
+
+jupiter: [
+    "Growth may be associated with confidence and personal development.",
+    "Family support, resources and generous speech may be themes.",
+    "Learning and communication may support courage and skills.",
+    "Home, family and education may be important areas of growth.",
+    "Creativity, knowledge and teaching may be emphasised.",
+    "Service, practical learning and problem-solving may be highlighted.",
+    "Cooperation, partnership and shared learning may be important.",
+    "Interest in deeper knowledge and transformation may develop.",
+    "Higher education, teachers and philosophical exploration may be emphasised.",
+    "Knowledge and guidance may contribute to career responsibilities.",
+    "Friendships, networks and long-term hopes may support growth.",
+    "Spiritual study, reflection and charitable activity may be meaningful."
+],
+
+venus: [
+    "Harmony, appearance and personal relationships may be important themes.",
+    "Comfort, beauty, family and material enjoyment may be emphasised.",
+    "Pleasant communication and artistic interests may be highlighted.",
+    "Beauty, comfort and harmony at home may be valued.",
+    "Creativity, romance and artistic expression may be important.",
+    "Cooperation and harmony may be useful in daily work.",
+    "Relationships, affection and partnership may be prominent themes.",
+    "Trust, intimacy and shared resources may need attention.",
+    "Art, culture, travel and learning may bring enjoyment.",
+    "Creativity and diplomacy may support professional relationships.",
+    "Friendships and social connections may be valued.",
+    "Private reflection and quiet enjoyment may be meaningful."
+],
+
+saturn: [
+    "Patience and responsibility may shape personal development.",
+    "Financial planning and family responsibilities may require discipline.",
+    "Communication and skills may develop through steady effort.",
+    "Home and family responsibilities may require patience.",
+    "Creativity and education may develop through consistent effort.",
+    "Discipline may be important in work and daily routines.",
+    "Commitment and responsibility may be important in partnerships.",
+    "Shared responsibilities and major changes may require patience.",
+    "Beliefs and higher learning may develop gradually through experience.",
+    "Career responsibilities and long-term effort may be emphasised.",
+    "Long-term goals and friendships may require commitment.",
+    "Solitude, rest and inner discipline may become important."
+],
+
+rahu: [
+    "Interest in identity, recognition and self-development may arise.",
+    "Ambition may focus on wealth, speech and family resources.",
+    "Unusual ideas and communication styles may attract attention.",
+    "Strong desires may be connected with home and comfort.",
+    "Unconventional creative interests may develop.",
+    "Ambition may focus on work and overcoming obstacles.",
+    "Relationships may involve unusual experiences or expectations.",
+    "Curiosity may turn toward hidden subjects and transformation.",
+    "Unconventional beliefs, travel or learning may attract interest.",
+    "Strong ambition may focus on career and recognition.",
+    "Networks and ambitious long-term goals may be important.",
+    "Interest in distant places, solitude or unusual experiences may arise."
+],
+
+ketu: [
+    "Self-understanding and independence may develop through introspection.",
+    "Reflection on values and material security may become important.",
+    "Communication may be thoughtful or unconventional.",
+    "Inner reflection may shape feelings about home and belonging.",
+    "Creative expression may take an inward direction.",
+    "A reflective approach may develop toward work and daily routines.",
+    "Partnerships may encourage reflection on attachment and independence.",
+    "Interest in research, mysteries and inner transformation may develop.",
+    "Spiritual inquiry and questioning of beliefs may be important.",
+    "A reflective approach may develop toward career and public status.",
+    "Social circles and ambitions may be reconsidered over time.",
+    "Solitude, meditation and spiritual reflection may be meaningful."
+]
+
+};
+
+
+// ------------------------------------
+// 6. ORDINAL HOUSE NUMBERS
+// ------------------------------------
+
+function ordinal(n) {
+    if (n % 100 >= 11 && n % 100 <= 13) {
+        return n + "th";
+    }
+
+    if (n % 10 === 1) return n + "st";
+    if (n % 10 === 2) return n + "nd";
+    if (n % 10 === 3) return n + "rd";
+
+    return n + "th";
+}
+
+
+// ------------------------------------
+// 7. READ SAVED DATA
+// ------------------------------------
+
+function getStoredData(key) {
+    try {
+        return JSON.parse(localStorage.getItem(key)) ||
+               JSON.parse(sessionStorage.getItem(key));
+    } catch (error) {
+        return null;
+    }
+}
+
+
+// ------------------------------------
+// 8. FIND ZODIAC SIGN
+// ------------------------------------
+
+function getSignIndex(value) {
+
+    if (value === undefined || value === null) {
+        return -1;
+    }
+
+    if (typeof value === "number" && Number.isFinite(value)) {
+
+        if (Number.isInteger(value) && value >= 0 && value < 12) {
+            return value;
+        }
+
+        if (value >= 0) {
+            return Math.floor((value % 360) / 30);
+        }
+    }
+
+    const text = String(value).trim().toLowerCase();
+
+    if (signAliases[text] !== undefined) {
+        return signAliases[text];
+    }
+
+    const found = Object.keys(signAliases).find(
+        name => text.includes(name)
+    );
+
+    return found !== undefined ? signAliases[found] : -1;
+}
+
+
+// ------------------------------------
+// 9. FIND ASCENDANT
+// ------------------------------------
+
+function getAscendantIndex(chart) {
+
+    const asc = chart.ascendant || chart.lagna || {};
+
+    const candidates = [
+        chart.ascendantSign,
+        chart.lagnaSign,
+        chart.ascendant,
+        chart.lagna,
+        asc.sign,
+        asc.signName,
+        asc.rashi,
+        asc.name
+    ];
+
+    for (const candidate of candidates) {
+
+        const value = typeof candidate === "object"
+            ? candidate.sign || candidate.signName ||
+              candidate.rashi || candidate.name
+            : candidate;
+
+        const index = getSignIndex(value);
+
+        if (index >= 0) {
+            return index;
+        }
+    }
+
+    const longitudes = [
+        chart.ascendantLongitude,
+        chart.lagnaLongitude,
+        asc.longitude,
+        asc.siderealLongitude
+    ];
+
+    for (const longitude of longitudes) {
+
+        if (longitude !== undefined && longitude !== null) {
+
+            const index = getSignIndex(Number(longitude));
+
+            if (index >= 0) {
+                return index;
+            }
+        }
+    }
+
+    return -1;
+}
+
+
+// ------------------------------------
+// 10. GET PLANET DATA
+// ------------------------------------
+
+function getPlanetData(chart) {
+
+    const data =
+        chart.planets ||
+        chart.positions ||
+        chart.planetPositions ||
+        {};
+
+    if (Array.isArray(data)) {
+        return data;
+    }
+
+    return Object.entries(data).map(([name, value]) => {
+
+        if (typeof value === "object" && value !== null) {
+            return {
+                ...value,
+                name: value.name || value.planet || name
+            };
+        }
+
+        return {
+            name: name,
+            sign: value
+        };
+    });
+}
+
+
+// ------------------------------------
+// 11. FIND PLANET SIGN
+// ------------------------------------
+
+function getPlanetSign(value) {
+
+    if (!value || typeof value !== "object") {
+        return getSignIndex(value);
+    }
+
+    const candidates = [
+        value.sign,
+        value.signName,
+        value.rashi,
+        value.signIndex
+    ];
+
+    for (const candidate of candidates) {
+
+        const index = getSignIndex(candidate);
+
+        if (index >= 0) {
+            return index;
+        }
+    }
+
+    const longitude =
+        value.siderealLongitude ??
+        value.longitude ??
+        value.degree;
+
+    if (longitude !== undefined && longitude !== null) {
+        return getSignIndex(Number(longitude));
+    }
+
+    return -1;
+}
+
+
+// ------------------------------------
+// 12. CALCULATE WHOLE-SIGN HOUSE
+// ------------------------------------
+
+function getPlanetHouse(planetSign, ascendantSign) {
+
+    return ((planetSign - ascendantSign + 12) % 12) + 1;
+}
+
+
+// ------------------------------------
+// 13. COMBINED INTERPRETATION
+// ------------------------------------
+
+function getCombinedInterpretation(planet, signIndex, house) {
+
+    const sign = signs[signIndex];
+
+    const quality = signQualities[signIndex];
+
+    const planetTheme = planetMeanings[planet];
+
+    const houseTheme = houseMeanings[house - 1];
+
+    return `In traditional Vedic astrology, ${planetNames[planet]}
+    in ${sign} in the ${ordinal(house)} house combines themes of
+    ${planetTheme}. These themes are symbolically expressed through
+    ${quality}. The house represents ${houseTheme}.
+    Together, these three factors provide a traditional symbolic
+    way to explore this planetary placement.`;
+}
+
+
+// ------------------------------------
+// 14. DISPLAY THE PAGE
+// ------------------------------------
+
+function displayPage() {
+
+    const chart = getStoredData("jyotishChart");
+
+    const birth = getStoredData("birthDetails");
+
+    const errorBox = document.getElementById("error");
+
+    const resultsBox = document.getElementById("results");
+
+    const birthBox = document.getElementById("birthInfo");
+
+
+    // Check whether a chart exists
+
+    if (!chart) {
+
+        errorBox.innerHTML = `
+            <div class="card">
+                <h2>Birth Chart Not Available</h2>
+                <p>Please calculate your planet positions first.</p>
+                <a href="birth-details.html">Enter Birth Details</a>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    // Find Lagna
+
+    const ascIndex = getAscendantIndex(chart);
+
+    if (ascIndex < 0) {
+
+        errorBox.innerHTML = `
+            <div class="card">
+                <h2>Lagna Not Found</h2>
+                <p>Please calculate your chart again from Planet Positions.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    // Display birth details
+
+    const birthName =
+        birth?.name ||
+        birth?.fullName ||
+        "Not available";
+
+    const birthDate =
+        birth?.date ||
+        birth?.dob ||
+        birth?.birthDate ||
+        birth?.birth_date ||
+        "Not available";
+
+    const birthPlace =
+        birth?.place ||
+        birth?.birthPlace ||
+        birth?.location ||
+        "Not available";
+
+
+    birthBox.innerHTML = `
+
+        <h2>Birth Chart Details</h2>
+
+        <p>
+            <span class="label">Name:</span>
+            ${birthName}
+        </p>
+
+        <p>
+            <span class="label">Date:</span>
+            ${birthDate}
+        </p>
+
+        <p>
+            <span class="label">Birth Place:</span>
+            ${birthPlace}
+        </p>
+
+        <p>
+            <span class="label">Lagna:</span>
+            ${signs[ascIndex]}
+        </p>
+
+        <p>
+            <span class="label">House System:</span>
+            Whole Sign
+        </p>
+
+    `;
+
+
+    // Get saved planets
+
+    const planets = getPlanetData(chart);
+
+    let html = "";
+
+    let count = 0;
+
+
+    // Read each planet
+
+    for (const value of planets) {
+
+        const rawName = String(
+            value.name ||
+            value.planet ||
+            value.id ||
+            ""
+        ).toLowerCase().replace(/\s+/g, "");
+
+        const key = rawName;
+
+        if (!planetNames[key]) {
+            continue;
+        }
+
+        const signIndex = getPlanetSign(value);
+
+        if (signIndex < 0) {
+            continue;
+        }
+
+        const house = getPlanetHouse(
+            signIndex,
+            ascIndex
+        );
+
+        const planetName = planetNames[key];
+
+        const note = planetHouseNotes[key][house - 1];
+
+        const combined = getCombinedInterpretation(
+            key,
+            signIndex,
+            house
+        );
+
+        html += `
+            <div class="card">
+
+                <h2>
+                    ${planetName} in the ${ordinal(house)} House
+                </h2>
+
+                <p>
+                    <span class="label">Sign:</span>
+                    ${signs[signIndex]}
+                </p>
+
+                <p>
+                    <span class="label">Traditional planet themes:</span>
+                    ${planetMeanings[key]}.
+                </p>
+
+                <p>
+                    <span class="label">House themes:</span>
+                    ${houseMeanings[house - 1]}.
+                </p>
+
+                <p>
+                    <span class="label">Traditional interpretation:</span>
+                    ${note}
+                </p>
+
+                <div class="combined">
+                    <p>
+                        <span class="label">
+                            Combined Planet + Sign + House Interpretation:
+                        </span>
+                    </p>
+
+                    <p>${combined}</p>
+                </div>
+
+            </div>
+        `;
+
+        count++;
+    }
+
+    if (count === 0) {
+        errorBox.innerHTML = `
+            <div class="card">
+                <h2>Planet Positions Not Found</h2>
+                <p>Please calculate your planet positions again.</p>
+                <a href="planet-positions.html">
+                   Open Planet Positions
+                </a>
+            </div>
+        `;
+        return;
+    }
+
+    resultsBox.innerHTML = html;
+}
+
+
+// START PAGE
+
+displayPage();
+
+</script>
+
+</body>
+</html>

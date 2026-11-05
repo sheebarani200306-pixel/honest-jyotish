@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Honest Jyotish - Kundli</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  padding:16px;
+  background:#fff8ed;
+  color:#382414;
+  font-family:Arial,sans-serif;
+}
+
+.container{
+  max-width:600px;
+  margin:auto;
+  background:white;
+  padding:18px;
+  border-radius:16px;
+  box-shadow:0 3px 15px #0001;
+}
+
+h2,h3{
+  text-align:center;
+  color:#9b541b;
+}
+
+.info{
+  background:#fff3e1;
+  padding:12px;
+  border-radius:8px;
+  line-height:1.8;
+}
+
+svg{
+  width:100%;
+  height:auto;
+  margin-top:15px;
+}
+
+.chart-line{
+  stroke:#9b541b;
+  stroke-width:2;
+  fill:none;
+}
+
+.house-number{
+  font-size:13px;
+  fill:#a36b35;
+}
+
+.planet-text{
+  font-size:14px;
+  fill:#392414;
+  font-weight:bold;
+}
+
+.details{
+  line-height:1.8;
+  padding:10px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  background:#9b541b;
+  color:white;
+  border:0;
+  border-radius:9px;
+  font-size:16px;
+  margin-top:15px;
+}
+
+.small{
+  font-size:12px;
+  color:#666;
+  line-height:1.5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>✦ Honest Jyotish ✦</h2>
+<h3>Your Vedic Birth Chart</h3>
+
+<div id="birth" class="info"></div>
+
+<h3>North Indian D1 Kundli</h3>
+<svg id="kundli" viewBox="0 0 400 400"></svg>
+
+<h3>Planetary Details</h3>
+<div id="details" class="details"></div>
+
+<p class="small">
+House assignments use whole-sign houses. Planetary positions
+and Lagna depend on the accuracy of the birth time, location
+and ephemeris calculations.
+<br><br>
+Astrology is a traditional belief system, not a scientifically
+established method of predicting events.
+</p>
+
+<button onclick="location.href='birth-details.html'">
+Enter New Birth Details
+</button>
+
+</div>
+
+<script>
+
+const signs = [
+ "Mesha","Vrishabha","Mithuna","Karka",
+ "Simha","Kanya","Tula","Vrischika",
+ "Dhanu","Makara","Kumbha","Meena"
+];
+
+function getSaved(key){
+  return JSON.parse(
+    localStorage.getItem(key) ||
+    sessionStorage.getItem(key) ||
+    "null"
+  );
+}
+
+function getSignIndex(value){
+
+  if(typeof value === "number" &&
+     Number.isFinite(value)){
+    return ((Math.floor(value)%12)+12)%12;
+  }
+
+  if(typeof value === "string"){
+
+    const clean = value.trim().toLowerCase();
+
+    const index = signs.findIndex(
+      s => s.toLowerCase() === clean
+    );
+
+    if(index !== -1) return index;
+
+    const english = [
+      "aries","taurus","gemini","cancer",
+      "leo","virgo","libra","scorpio",
+      "sagittarius","capricorn","aquarius","pisces"
+    ];
+
+    const englishIndex = english.indexOf(clean);
+
+    if(englishIndex !== -1) return englishIndex;
+  }
+
+  return null;
+}
+
+function getLongitude(object){
+
+  if(typeof object === "number"){
+    return object;
+  }
+
+  if(!object || typeof object !== "object"){
+    return null;
+  }
+
+  const candidates = [
+    object.longitude,
+    object.siderealLongitude,
+    object.sidereal_longitude
+  ];
+
+  for(const value of candidates){
+
+    const number = Number(value);
+
+    if(value !== undefined &&
+       value !== null &&
+       Number.isFinite(number)){
+      return ((number%360)+360)%360;
+    }
+  }
+
+  return null;
+}
+
+function getDegree(object,longitude){
+
+  if(object && typeof object === "object"){
+
+    const candidates = [
+      object.degree,
+      object.degrees,
+      object.degreeInSign
+    ];
+
+    for(const value of candidates){
+
+      if(value !== undefined &&
+         value !== null &&
+         Number.isFinite(Number(value))){
+        return Number(value);
+      }
+    }
+  }
+
+  return longitude % 30;
+}
+
+function formatDegree(value){
+
+  const degrees = Math.floor(value);
+  const minutes = Math.floor((value-degrees)*60);
+
+  return degrees + "° " +
+         String(minutes).padStart(2,"0") + "′";
+}
+
+function getDate(birth){
+
+  return birth.date ||
+         birth.dob ||
+         birth.birthDate ||
+         "Not available";
+}
+
+function showError(message){
+
+  document.getElementById("birth").textContent = message;
+
+  document.getElementById("kundli").style.display = "none";
+
+  document.getElementById("details").textContent = "";
+}
+
+// Read saved information
+
+const chart = getSaved("jyotishChart");
+const birth = getSaved("birthDetails");
+
+if(!chart){
+  showError(
+    "No saved planetary chart found. Please calculate Planet Positions first."
+  );
+  throw new Error("Saved chart missing.");
+}
+
+// Birth details
+
+const name =
+  (birth && (birth.name || birth.fullName)) ||
+  chart.name ||
+  "Not available";
+
+const date = birth ? getDate(birth) :
+  (chart.date || chart.dob || "Not available");
+
+const time =
+  (birth && (birth.time || birth.birthTime)) ||
+  chart.time ||
+  "Not available";
+
+const place =
+  (birth && (birth.place || birth.birthPlace)) ||
+  chart.place ||
+  "Not available";
+
+// Read planetary positions
+
+const planetList = Array.isArray(chart.planets)
+  ? chart.planets
+  : Array.isArray(chart.positions)
+    ? chart.positions
+    : [];
+
+if(planetList.length === 0){
+  showError(
+    "Planetary positions not found. Please calculate Planet Positions again."
+  );
+  throw new Error("Planet list missing.");
+}
+
+// Read Lagna
+
+let ascendantObject =
+  chart.ascendant ||
+  chart.lagna ||
+  null;
+
+let ascLongitude = getLongitude(ascendantObject);
+
+if(ascLongitude === null){
+
+  const candidates = [
+    chart.ascendantLongitude,
+    chart.lagnaLongitude,
+    chart.ascendant_longitude
+  ];
+
+  for(const value of candidates){
+
+    if(value !== undefined &&
+       value !== null &&
+       Number.isFinite(Number(value))){
+
+      ascLongitude =
+        ((Number(value)%360)+360)%360;
+
+      break;
+    }
+  }
+}
+
+let ascSign = null;
+let ascDegree = null;
+
+if(ascLongitude !== null){
+
+  ascSign = Math.floor(ascLongitude/30);
+  ascDegree = ascLongitude%30;
+
+}else{
+
+  const signValue =
+    chart.ascendantSign ??
+    chart.lagnaSign ??
+    (ascendantObject &&
+     ascendantObject.sign);
+
+  ascSign = getSignIndex(signValue);
+
+  const degreeValue =
+    chart.ascendantDegree ??
+    chart.lagnaDegree ??
+    (ascendantObject &&
+     ascendantObject.degree);
+
+  if(degreeValue !== undefined &&
+     degreeValue !== null &&
+     Number.isFinite(Number(degreeValue))){
+
+    ascDegree = Number(degreeValue);
+  }
+}
+
+if(ascSign === null || ascDegree === null){
+
+  showError(
+    "Birth details found, but Lagna information is missing. Please recalculate Planet Positions."
+  );
+
+  throw new Error("Lagna information missing.");
+}
+
+// Display birth information
+
+document.getElementById("birth").innerHTML = "";
+
+const birthLines = [
+  ["Name",name],
+  ["Date",date],
+  ["Time",time],
+  ["Place",place],
+  ["Lagna",signs[ascSign]+" ("+formatDegree(ascDegree)+")"]
+];
+
+birthLines.forEach(([label,value])=>{
+
+  const line = document.createElement("div");
+
+  const bold = document.createElement("b");
+  bold.textContent = label + ": ";
+
+  line.appendChild(bold);
+  line.appendChild(document.createTextNode(value));
+
+  document.getElementById("birth").appendChild(line);
+});
+
+// Create 12 houses
+
+const houses = Array.from(
+  {length:12},
+  (_,i)=>({
+    house:i+1,
+    sign:(ascSign+i)%12,
+    planets:[]
+  })
+);
+
+// Assign planets to houses
+
+const planetDetails = [];
+
+planetList.forEach(p=>{
+
+  const longitude = getLongitude(p);
+
+  let signIndex = null;
+  let degree = null;
+
+  if(longitude !== null){
+
+    signIndex = Math.floor(longitude/30);
+    degree = longitude%30;
+
+  }else{
+
+    signIndex = getSignIndex(p.sign);
+
+    if(signIndex !== null){
+      degree = getDegree(p,null);
+    }
+  }
+
+  if(signIndex === null || degree === null){
+    return;
+  }
+
+  const name = p.name || p.planet || "Planet";
+
+  const houseNumber =
+    ((signIndex-ascSign+12)%12)+1;
+
+  houses[houseNumber-1].planets.push(name);
+
+  planetDetails.push({
+    name,
+    sign:signIndex,
+    degree,
+    house:houseNumber
+  });
+});
+
+// Draw North Indian Kundli
+
+const svg = document.getElementById("kundli");
+const ns = "http://www.w3.org/2000/svg";
+
+function add(tag,attrs,text){
+
+  const el = document.createElementNS(ns,tag);
+
+  Object.entries(attrs).forEach(([key,value])=>{
+    el.setAttribute(key,value);
+  });
+
+  if(text !== undefined){
+    el.textContent = text;
+  }
+
+  svg.appendChild(el);
+
+  return el;
+}
+
+// Outer square
+
+add("rect",{
+  x:5,y:5,width:390,height:390,
+  fill:"#fffaf1",
+  stroke:"#9b541b",
+  "stroke-width":2
+});
+
+// Diamond boundaries
+
+add("path",{
+  d:"M200 5 L395 200 L200 395 L5 200 Z",
+  class:"chart-line"
+});
+
+add("path",{
+  d:"M5 5 L395 395 M395 5 L5 395",
+  class:"chart-line"
+});
+
+// House positions
+
+const positions = [
+  [200,55],
+  [100,75],
+  [55,150],
+  [55,250],
+  [100,325],
+  [200,345],
+  [300,325],
+  [345,250],
+  [345,150],
+  [300,75],
+  [200,125],
+  [200,200]
+];
+
+// Render house numbers, signs and planets
+
+houses.forEach((h,i)=>{
+
+  const [x,y] = positions[i];
+
+  add("text",{
+    x,
+    y:y-12,
+    "text-anchor":"middle",
+    class:"house-number"
+  },h.house+" · "+signs[h.sign]);
+
+  h.planets.forEach((planet,index)=>{
+
+    add("text",{
+      x,
+      y:y+8+index*17,
+      "text-anchor":"middle",
+      class:"planet-text"
+    },planet);
+
+  });
+
+});
+
+// Display planetary details
+
+const details = document.getElementById("details");
+
+planetDetails.forEach(p=>{
+
+  const row = document.createElement("div");
+
+  const bold = document.createElement("b");
+  bold.textContent = p.name;
+
+  row.appendChild(bold);
+
+  row.appendChild(
+    document.createTextNode(
+      " — "+signs[p.sign]+", "+
+      formatDegree(p.degree)+
+      " — House "+p.house
+    )
+  );
+
+  details.appendChild(row);
+
+});
+
+</script>
+
+</body>
+</html>

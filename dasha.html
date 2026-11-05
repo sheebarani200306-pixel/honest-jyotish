@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Honest Jyotish - Vimshottari Dasha</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f7f3eb;
+  color: #29231d;
+  margin: 0;
+  padding: 18px;
+}
+.container {
+  max-width: 700px;
+  margin: auto;
+}
+h1, h2 {
+  color: #70421e;
+}
+h1 { text-align: center; }
+.card {
+  background: white;
+  padding: 16px;
+  margin: 14px 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #00000012;
+}
+.info {
+  background: #f3eadc;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 10px 0;
+  line-height: 1.7;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+th, td {
+  padding: 10px 6px;
+  text-align: left;
+  border-bottom: 1px solid #e5ddd2;
+}
+th { background: #eee3d3; }
+.active {
+  background: #e6f3df;
+  font-weight: bold;
+}
+.small {
+  color: #71685e;
+  font-size: 13px;
+  line-height: 1.5;
+}
+button {
+  width: 100%;
+  padding: 13px;
+  background: #75451f;
+  color: white;
+  border: 0;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>✦ Honest Jyotish ✦</h1>
+
+<div class="card">
+  <h2>Vimshottari Dasha</h2>
+  <p id="birthInfo" class="small"></p>
+  <p id="status">Loading saved birth chart...</p>
+  <button type="button" onclick="calculateDasha()">
+  Calculate Dasha
+  </button>
+</div>
+
+<div class="card" id="birthCard" style="display:none">
+  <h2>Birth Nakshatra</h2>
+  <div id="birthNakshatra" class="info"></div>
+  <h3>Birth Mahadasha Balance</h3>
+  <div id="balance" class="info"></div>
+</div>
+
+<div class="card" id="currentCard" style="display:none">
+  <h2>Current Dasha</h2>
+  <div id="currentDasha" class="info"></div>
+</div>
+
+<div class="card" id="mahadashaCard" style="display:none">
+  <h2>Mahadasha Timeline</h2>
+  <div style="overflow-x:auto">
+    <table>
+      <thead>
+        <tr>
+          <th>Planet</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Years</th>
+        </tr>
+      </thead>
+      <tbody id="mahadashaTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card" id="antarCard" style="display:none">
+  <h2>Antardasha Timeline</h2>
+  <p id="antarHeading" class="small"></p>
+  <div style="overflow-x:auto">
+    <table>
+      <thead>
+        <tr>
+          <th>Antardasha</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+        </tr>
+      </thead>
+      <tbody id="antarTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<p class="small">
+  Vimshottari Dasha is a traditional Vedic astrology system.
+  Its interpretations are not scientifically validated predictions.
+  Dates use a 365.25-day dasha year.
+</p>
+
+</div>
+
+<script>
+
+const nakshatras = [
+"Ashwini","Bharani","Krittika","Rohini","Mrigashira",
+"Ardra","Punarvasu","Pushya","Ashlesha","Magha",
+"Purva Phalguni","Uttara Phalguni","Hasta","Chitra",
+"Swati","Vishakha","Anuradha","Jyeshtha","Mula",
+"Purva Ashadha","Uttara Ashadha","Shravana",
+"Dhanishta","Shatabhisha","Purva Bhadrapada",
+"Uttara Bhadrapada","Revati"
+];
+
+const planets = [
+{name:"Ketu",years:7},
+{name:"Venus",years:20},
+{name:"Sun",years:6},
+{name:"Moon",years:10},
+{name:"Mars",years:7},
+{name:"Rahu",years:18},
+{name:"Jupiter",years:16},
+{name:"Saturn",years:19},
+{name:"Mercury",years:17}
+];
+
+const nakshatraSize = 360 / 27;
+const dashaYear = 365.25 * 86400000;
+
+function getBirthDetails() {
+  const data =
+    localStorage.getItem("birthDetails") ||
+    sessionStorage.getItem("birthDetails");
+
+  if (!data) {
+    throw new Error("Birth details not found. Please enter birth details again.");
+  }
+
+  return JSON.parse(data);
+}
+
+function getSavedChart() {
+  const data =
+    localStorage.getItem("jyotishChart") ||
+    sessionStorage.getItem("jyotishChart");
+
+  if (!data) {
+    throw new Error("Planetary chart not found. Please calculate Planet Positions first.");
+  }
+
+  return JSON.parse(data);
+}
+
+function getMoonLongitude(chart) {
+  if (Array.isArray(chart.planets)) {
+    const moon = chart.planets.find(p =>
+      String(p.name).toLowerCase() === "moon"
+    );
+
+    if (moon && Number.isFinite(Number(moon.longitude))) {
+      return Number(moon.longitude);
+    }
+  }
+
+  if (chart.moonLongitude !== undefined) {
+    return Number(chart.moonLongitude);
+  }
+
+  throw new Error("Moon longitude missing. Recalculate Planet Positions.");
+}
+
+function getBirthDate(birth) {
+  const date = birth.date || birth.dob || birth.birthDate;
+  let time = birth.time || birth.birthTime || "12:00";
+
+  if (!date) throw new Error("Birth date is missing.");
+
+  time = String(time).trim().toUpperCase();
+
+  const match = time.match(
+    /^(\d{1,2}):(\d{2})(?::\d{2})?\s*(AM|PM)?$/
+  );
+
+  if (!match) throw new Error("Invalid birth time: " + time);
+
+  let hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  const period = match[3];
+
+  if (minutes > 59 || hours > 23) {
+    throw new Error("Invalid birth time.");
+  }
+
+  if (period) {
+    if (hours < 1 || hours > 12) {
+      throw new Error("Invalid AM/PM time.");
+    }
+
+    if (period === "PM" && hours !== 12) hours += 12;
+    if (period === "AM" && hours === 12) hours = 0;
+  }
+
+  const formattedTime =
+    String(hours).padStart(2,"0") + ":" +
+    String(minutes).padStart(2,"0");
+
+  const result = new Date(
+    date + "T" + formattedTime + ":00+05:30"
+  );
+
+  if (isNaN(result.getTime())) {
+    throw new Error("Invalid birth date.");
+  }
+
+  return result;
+}
+
+function getPlanet(index) {
+  return planets[index % 9];
+}
+
+function addYears(date, years) {
+  return new Date(date.getTime() + years * dashaYear);
+}
+
+function formatDate(date) {
+  return new Intl.DateTimeFormat("en-IN", {
+    day:"2-digit",
+    month:"short",
+    year:"numeric",
+    timeZone:"Asia/Kolkata"
+  }).format(date);
+}
+
+function formatBalance(years) {
+  const totalDays = Math.floor(years * 365.25);
+  const y = Math.floor(totalDays / 365.25);
+  const remaining = totalDays - Math.floor(y * 365.25);
+  const months = Math.floor(remaining / 30.4375);
+  const days = Math.floor(remaining - months * 30.4375);
+
+  return y + " years, " + months + " months, " + days + " days";
+}
+
+function makeAntardashas(mdIndex, mdStart, mdYears, now) {
+  const rows = [];
+  let start = mdStart;
+  let active = null;
+
+  for (let i = 0; i < 9; i++) {
+    const adPlanet = getPlanet(mdIndex + i);
+    const adYears = mdYears * adPlanet.years / 120;
+    const end = addYears(start, adYears);
+
+    const isActive = now >= start && now < end;
+
+    if (isActive) {
+      active = {
+        planet: adPlanet.name,
+        start,
+        end
+      };
+    }
+
+    rows.push({
+      planet: adPlanet.name,
+      start,
+      end,
+      active: isActive
+    });
+
+    start = end;
+  }
+
+  return {rows, active};
+}
+
+function calculateDasha() {
+  try {
+    const birth = getBirthDetails();
+    const chart = getSavedChart();
+
+    const moonLongitude = getMoonLongitude(chart);
+
+    if (!Number.isFinite(moonLongitude) ||
+        moonLongitude < 0 || moonLongitude >= 360) {
+      throw new Error("Invalid Moon longitude in saved chart.");
+    }
+
+    const birthDate = getBirthDate(birth);
+    const now = new Date();
+
+    const nakIndex = Math.floor(moonLongitude / nakshatraSize);
+    const position = moonLongitude - nakIndex * nakshatraSize;
+    const fractionCompleted = position / nakshatraSize;
+
+    const startingIndex = nakIndex % 9;
+    const birthPlanet = getPlanet(startingIndex);
+
+    const elapsedYears = birthPlanet.years * fractionCompleted;
+    const balanceYears = birthPlanet.years - elapsedYears;
+
+    const firstMDStart = addYears(birthDate, -elapsedYears);
+    const firstMDEnd = addYears(birthDate, balanceYears);
+
+    const birthNakshatra = nakshatras[nakIndex];
+
+    document.getElementById("birthInfo").textContent =
+      (birth.name || birth.fullName || "") +
+      " | " + formatDate(birthDate);
+
+    document.getElementById("birthNakshatra").innerHTML =
+      "<b>" + birthNakshatra + "</b><br>" +
+      "Nakshatra lord: " + birthPlanet.name;
+
+    document.getElementById("balance").innerHTML =
+      "<b>" + birthPlanet.name + " Mahadasha</b><br>" +
+      "Remaining at birth: " + formatBalance(balanceYears) +
+      "<br>End date: " + formatDate(firstMDEnd);
+
+    document.getElementById("birthCard").style.display = "block";
+
+    const mahadashas = [];
+    let mdStart = firstMDStart;
+
+    for (let i = 0; i < 9; i++) {
+      const index = (startingIndex + i) % 9;
+      const planet = getPlanet(index);
+      const mdEnd = addYears(mdStart, planet.years);
+
+      mahadashas.push({
+        planet: planet.name,
+        years: planet.years,
+        start: mdStart,
+        end: mdEnd,
+        index
+      });
+
+      mdStart = mdEnd;
+    }
+
+    const mdTable = document.getElementById("mahadashaTable");
+    mdTable.innerHTML = "";
+
+    let currentMD = null;
+
+    mahadashas.forEach(md => {
+      const isActive = now >= md.start && now < md.end;
+
+      if (isActive) currentMD = md;
+
+      const row = document.createElement("tr");
+      if (isActive) row.className = "active";
+
+      [
+        md.planet + (isActive ? " ★" : ""),
+        formatDate(md.start),
+        formatDate(md.end),
+        md.years
+      ].forEach(value => {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.appendChild(cell);
+      });
+
+      mdTable.appendChild(row);
+    });
+
+    document.getElementById("mahadashaCard").style.display = "block";
+
+    if (currentMD) {
+      const antar = makeAntardashas(
+        currentMD.index,
+        currentMD.start,
+        currentMD.years,
+        now
+      );
+
+      const currentAD = antar.active;
+
+      document.getElementById("currentDasha").innerHTML =
+        "<b>Mahadasha:</b> " + currentMD.planet +
+        "<br><b>Antardasha:</b> " +
+        (currentAD ? currentAD.planet : "Not available") +
+        "<br><b>Mahadasha period:</b> " +
+        formatDate(currentMD.start) + " – " +
+        formatDate(currentMD.end) +
+        (currentAD ?
+          "<br><b>Antardasha period:</b> " +
+          formatDate(currentAD.start) + " – " +
+          formatDate(currentAD.end) : "");
+
+      document.getElementById("currentCard").style.display = "block";
+
+      document.getElementById("antarHeading").textContent =
+        currentMD.planet + " Mahadasha Antardasha periods";
+
+      const antarTable = document.getElementById("antarTable");
+      antarTable.innerHTML = "";
+
+      antar.rows.forEach(ad => {
+        const row = document.createElement("tr");
+        if (ad.active) row.className = "active";
+
+        [
+          ad.planet + (ad.active ? " ★ CURRENT" : ""),
+          formatDate(ad.start),
+          formatDate(ad.end)
+        ].forEach(value => {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+          row.appendChild(cell);
+        });
+
+        antarTable.appendChild(row);
+      });
+
+      document.getElementById("antarCard").style.display = "block";
+
+    } else {
+      document.getElementById("currentDasha").textContent =
+        "Current date is outside the displayed Mahadasha timeline.";
+
+      document.getElementById("currentCard").style.display = "block";
+    }
+
+    document.getElementById("status").textContent =
+      "Vimshottari Dasha calculated successfully.";
+
+  } catch (error) {
+    document.getElementById("status").textContent =
+      "Error: " + error.message;
+
+    console.error(error);
+  }
+}
+
+
+</script>
+
+</body>
+</html>

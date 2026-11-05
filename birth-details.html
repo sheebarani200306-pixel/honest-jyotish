@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Birth Details | Honest Jyotish</title>
+<style>
+body{background:#100d24;color:white;font-family:Georgia,serif;padding:25px}
+h1{color:#f5cf83;text-align:center}
+p{text-align:center;color:#d0c8e8}
+form{max-width:400px;margin:35px auto}
+label{display:block;margin-top:20px;margin-bottom:8px;color:#f5cf83}
+input,select{width:100%;padding:13px;border-radius:8px;border:none;box-sizing:border-box;background:#211a3b;color:white;font-size:16px}
+button{margin-top:30px;width:100%;padding:15px;background:#e6bb70;border:none;border-radius:25px;font-weight:bold;font-size:16px}
+</style>
+</head>
+<body>
+
+<h1>✦ Your Birth Details ✦</h1>
+<p>Enter your details to begin exploring your birth chart.</p>
+
+<form id="birthForm">
+<label>Full Name</label>
+<input type="text" id="name" required>
+
+<label>Date of Birth</label>
+<input type="date" id="dob" required>
+
+<label>Exact Birth Time</label>
+<input type="time" id="time" required>
+
+<label>Birthplace</label>
+<input type="text" id="place" placeholder="Example: Bengaluru, India" required>
+
+<label>Astrology System</label>
+<select id="system">
+<option value="vedic">Vedic Astrology</option>
+<option value="western">Western Astrology</option>
+</select>
+
+<button type="submit">Continue</button>
+</form>
+
+<script>
+document.getElementById("birthForm").addEventListener("submit",function(e){
+    e.preventDefault();
+
+    const details={
+        name:document.getElementById("name").value,
+        dob:document.getElementById("dob").value,
+        time:document.getElementById("time").value,
+        place:document.getElementById("place").value,
+        system:document.getElementById("system").value
+    };
+
+    const data=JSON.stringify(details);
+
+    localStorage.setItem("birthDetails",data);
+    sessionStorage.setItem("birthDetails",data);
+
+    window.location.href="chart-preview.html";
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Honest Jyotish - Astronomy Engine</title>
+
+<style>
+body {
+    background: #100d24;
+    color: white;
+    font-family: Georgia, serif;
+    padding: 25px;
+}
+
+h1 {
+    color: #f5cf83;
+    text-align: center;
+}
+
+.card {
+    background: #211a3b;
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 25px;
+}
+
+button {
+    background: #e6bb70;
+    padding: 13px;
+    border: none;
+    border-radius: 20px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+input {
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>✦ Astronomy Foundation ✦</h1>
+
+<div class="card">
+
+<h3>Julian Day Calculator</h3>
+
+<label>Enter UTC date and time</label>
+<input type="datetime-local" id="date">
+
+<button onclick="calculate()">Calculate Julian Day</button>
+
+<h3 id="result"></h3>
+
+</div>
+
+<script>
+function calculate() {
+
+    const value = document.getElementById("date").value;
+
+    if (!value) {
+        alert("Please enter a date and time.");
+        return;
+    }
+
+    const date = new Date(value + ":00Z");
+
+    const julianDay =
+        date.getTime() / 86400000 + 2440587.5;
+
+    document.getElementById("result").innerText =
+        "Julian Day: " + julianDay.toFixed(6);
+}
+</script>
+
+</body>
+</html>

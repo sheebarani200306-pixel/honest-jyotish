@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personalised House Analysis | Honest Jyotish</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 18px;
+    background: #f8f1e7;
+    color: #493526;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 750px;
+    margin: auto;
+}
+
+header {
+    text-align: center;
+    padding: 15px;
+}
+
+h1, h2 { color: #89552d; }
+
+.card {
+    background: #fffaf2;
+    border: 1px solid #e6d4bd;
+    border-radius: 12px;
+    padding: 18px;
+    margin: 15px 0;
+    box-shadow: 0 2px 6px rgba(80,50,20,0.06);
+}
+
+.card p {
+    line-height: 1.65;
+}
+
+.info {
+    background: #f1e6d7;
+    padding: 12px;
+    border-radius: 8px;
+    line-height: 1.6;
+}
+
+.tag {
+    display: inline-block;
+    background: #f0e0ca;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+button, a {
+    display: inline-block;
+    background: #89552d;
+    color: white;
+    border: none;
+    padding: 12px 17px;
+    border-radius: 7px;
+    text-decoration: none;
+    margin: 6px;
+    cursor: pointer;
+}
+
+.notice {
+    background: #f1e6d7;
+    padding: 15px;
+    border-radius: 10px;
+    line-height: 1.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+<h1>✦ Personalised 12-House Analysis ✦</h1>
+<p>Explore the traditional meanings of the houses in your birth chart.</p>
+</header>
+
+<div id="profile" class="card">
+<h2>Your Birth Chart</h2>
+<p>Loading your saved birth details...</p>
+</div>
+
+<div id="houses"></div>
+
+<div class="notice">
+<b>Honest Jyotish Disclaimer</b>
+<p>
+These interpretations describe traditional Vedic astrology beliefs.
+Astrology is not scientifically established as a method for predicting
+personality or future events. House placements alone cannot determine
+a person's life.
+</p>
+</div>
+
+<div style="text-align:center; margin:25px 0;">
+<a href="kundli.html">View Kundli</a>
+<a href="index.html">Back to Home</a>
+</div>
+
+</div>
+
+<script>
+const signs = [
+    "Mesha", "Vrishabha", "Mithuna", "Karka",
+    "Simha", "Kanya", "Tula", "Vrischika",
+    "Dhanu", "Makara", "Kumbha", "Meena"
+];
+
+const houseNames = [
+    "Self and Personality",
+    "Wealth and Family",
+    "Courage and Communication",
+    "Home and Happiness",
+    "Creativity and Learning",
+    "Challenges and Service",
+    "Relationships and Partnership",
+    "Transformation and Mystery",
+    "Wisdom and Philosophy",
+    "Career and Actions",
+    "Gains and Networks",
+    "Spirituality and Release"
+];
+
+const meanings = [
+    "Traditionally represents identity, physical body, personality and approach to life.",
+    "Traditionally represents family, savings, speech, food and personal values.",
+    "Traditionally represents courage, siblings, communication, skills and short journeys.",
+    "Traditionally represents home, mother, education, property and emotional comfort.",
+    "Traditionally represents creativity, learning, intelligence, children and hobbies.",
+    "Traditionally represents service, daily work, competition, debts and challenges.",
+    "Traditionally represents marriage, partnerships, agreements and relationships.",
+    "Traditionally represents transformation, research, inheritance and shared resources.",
+    "Traditionally represents higher learning, teachers, philosophy, ethics and spirituality.",
+    "Traditionally represents career, profession, responsibilities and public reputation.",
+    "Traditionally represents income, friendships, ambitions, networks and gains.",
+    "Traditionally represents expenses, solitude, sleep, foreign places and spiritual reflection."
+];
+
+const planetNames = {
+    Sun: "Sun",
+    Moon: "Moon",
+    Mars: "Mars",
+    Mercury: "Mercury",
+    Jupiter: "Jupiter",
+    Venus: "Venus",
+    Saturn: "Saturn",
+    Rahu: "Rahu",
+    Ketu: "Ketu"
+};
+
+function readStorage(key) {
+    try {
+        return JSON.parse(localStorage.getItem(key)) ||
+               JSON.parse(sessionStorage.getItem(key));
+    } catch (e) {
+        return null;
+    }
+}
+
+function getSignIndex(value) {
+    if (typeof value === "number") {
+        return ((Math.floor(value / 30) % 12) + 12) % 12;
+    }
+
+    if (typeof value !== "string") return -1;
+
+    const cleaned = value.trim().toLowerCase();
+
+    const aliases = {
+        aries: "mesha",
+        taurus: "vrishabha",
+        gemini: "mithuna",
+        cancer: "karka",
+        leo: "simha",
+        virgo: "kanya",
+        libra: "tula",
+        scorpio: "vrischika",
+        sagittarius: "dhanu",
+        capricorn: "makara",
+        aquarius: "kumbha",
+        pisces: "meena"
+    };
+
+    const normalized = aliases[cleaned] || cleaned;
+
+    return signs.findIndex(s => s.toLowerCase() === normalized);
+}
+
+function getPlanetSign(planet) {
+    if (planet.signIndex !== undefined) {
+        return Number(planet.signIndex);
+    }
+
+    if (planet.sign !== undefined) {
+        return getSignIndex(planet.sign);
+    }
+
+    if (planet.longitude !== undefined) {
+        return getSignIndex(Number(planet.longitude));
+    }
+
+    return -1;
+}
+
+function getAscendantIndex(chart) {
+    const asc = chart.ascendant || chart.lagna || {};
+
+    const candidates = [
+        chart.ascendantSign,
+        chart.lagnaSign,
+        chart.ascendant,
+        chart.lagna,
+        asc.sign,
+        asc.signName,
+        asc.rashi,
+        asc.name
+    ];
+
+    for (const candidate of candidates) {
+        const index = getSignIndex(candidate);
+        if (index >= 0) return index;
+    }
+
+    const longitudes = [
+        chart.ascendantLongitude,
+        chart.lagnaLongitude,
+        asc.longitude,
+        asc.siderealLongitude
+    ];
+
+    for (const longitude of longitudes) {
+        if (longitude !== undefined && longitude !== null) {
+            const index = getSignIndex(Number(longitude));
+            if (index >= 0) return index;
+        }
+    }
+
+    return -1;
+}
+
+    
+
+
+function showError(message) {
+    document.getElementById("profile").innerHTML =
+        "<h2>Birth Chart Not Available</h2><p>" +
+        message +
+        "</p><p>Please calculate your planetary positions first.</p>" +
+        '<a href="birth-details.html">Enter Birth Details</a>';
+}
+
+function displayHouses() {
+    const chart = readStorage("jyotishChart");
+    const birth = readStorage("birthDetails");
+
+    if (!chart) {
+        showError("No saved planetary chart was found.");
+        return;
+    }
+
+    const ascendant = getAscendantIndex(chart);
+
+    if (ascendant < 0) {
+        showError("The ascendant sign could not be read from your saved chart.");
+        return;
+    }
+
+    const planets = chart.planets || chart.positions || [];
+
+    const planetMap = {};
+
+    Object.keys(planetNames).forEach(name => {
+        planetMap[name.toLowerCase()] = [];
+    });
+
+    planets.forEach(planet => {
+        const name = String(planet.name || planet.planet || "").toLowerCase();
+        const signIndex = getPlanetSign(planet);
+
+        if (signIndex < 0 || signIndex > 11) return;
+
+        const house = ((signIndex - ascendant + 12) % 12) + 1;
+
+        if (planetMap[name]) {
+            planetMap[name].push({
+                name: planetNames[name],
+                house: house
+            });
+        }
+    });
+
+    const profile = document.getElementById("profile");
+
+    profile.innerHTML = `
+        <h2>Your Birth Chart</h2>
+        <p><b>Name:</b> ${birth?.name || "Not available"}</p>
+        <p><b>Date:</b> ${birth?.date || birth?.dob || "Not available"}</p>
+        <p><b>Birth Place:</b> ${birth?.place || "Not available"}</p>
+        <p><b>Lagna:</b> ${signs[ascendant]}</p>
+        <div class="info">
+        Your chart is being interpreted using the whole-sign house system.
+        </div>
+    `;
+
+    const housePlanets = Array.from({length: 12}, () => []);
+
+    planets.forEach(planet => {
+        const name = String(planet.name || planet.planet || "");
+        const signIndex = getPlanetSign(planet);
+
+        if (signIndex < 0 || signIndex > 11) return;
+
+        const house = ((signIndex - ascendant + 12) % 12);
+        housePlanets[house].push(name);
+    });
+
+    let html = "";
+
+    for (let i = 0; i < 12; i++) {
+        const signIndex = (ascendant + i) % 12;
+        const placed = housePlanets[i];
+
+        html += `
+        <div class="card">
+            <span class="tag">House ${i + 1}</span>
+            <h2>${i + 1}${["st","nd","rd"][i] || "th"} House – ${houseNames[i]}</h2>
+            <p><b>Sign:</b> ${signs[signIndex]}</p>
+            <p><b>Planets placed:</b>
+            ${placed.length ? placed.join(", ") : "No planets"}
+            </p>
+            <p><b>Traditional meaning:</b> ${meanings[i]}</p>
+        </div>
+        `;
+    }
+
+    document.getElementById("houses").innerHTML = html;
+}
+
+displayHouses();
+</script>
+
+</body>
+</html>

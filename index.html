@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Honest Jyotish</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Georgia, serif;
+    background: #100d24;
+    color: white;
+    text-align: center;
+}
+
+header {
+    padding: 22px 15px;
+    font-size: 25px;
+    color: #f5cf83;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px;
+    background: #211a3b;
+}
+
+nav a {
+    color: #f5cf83;
+    text-decoration: none;
+    padding: 9px 12px;
+    border: 1px solid #594878;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+nav a:hover {
+    background: #e6bb70;
+    color: #171126;
+}
+
+.hero {
+    padding: 60px 20px;
+}
+
+.symbol {
+    font-size: 65px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 36px;
+    color: #f5cf83;
+    margin-bottom: 15px;
+}
+
+.description {
+    color: #d0c8e8;
+    line-height: 1.7;
+    margin-bottom: 30px;
+}
+
+button {
+    background: #e6bb70;
+    color: #171126;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.features {
+    padding: 25px 15px;
+}
+
+.card {
+    background: #211a3b;
+    padding: 22px;
+    margin: 15px auto;
+    border-radius: 15px;
+    max-width: 350px;
+}
+
+.card h3 {
+    color: #f5cf83;
+    margin-bottom: 10px;
+}
+
+.card p {
+    color: #d0c8e8;
+    line-height: 1.6;
+}
+
+.card a {
+    display: inline-block;
+    margin-top: 15px;
+    color: #f5cf83;
+    text-decoration: none;
+    border: 1px solid #f5cf83;
+    padding: 9px 18px;
+    border-radius: 20px;
+}
+
+footer {
+    padding: 30px 15px;
+    color: #a9a1bd;
+    font-size: 13px;
+    line-height: 1.7;
+}
+</style>
+</head>
+
+<body>
+
+<header>✦ HONEST JYOTISH ✦</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="birth-details.html">Birth Details</a>
+    <a href="chart-preview.html">Chart Preview</a>
+    <a href="planet-calculator.html">Planet Calculator</a>
+    <a href="planet-positions.html">Planet Positions</a>
+    <a href="kundli.html">Kundli</a>
+    <a href="dasha.html">Vimshottari Dasha</a>
+    <a href="planet-interpretations.html">Planetary Interpretations</a>
+    <a href="house-interpretations.html">
+  12 House Interpretations</a>
+    <a href="personalised-houses.html">
+  Personalised House Interpretations
+    </a> 
+    <a href="planet-house-interpretations.html">
+  Planet-in-House Interpretations
+    </a>
+
+</nav>
+
+<section class="hero">
+
+    <div class="symbol">☽ ✨ ☉</div>
+
+    <h1>Discover Your Cosmic Story</h1>
+
+    <p class="description">
+        Explore traditional astrology with transparency.
+        Understand your birth chart, planetary positions
+        and ancient astrological interpretations.
+        <br><br>
+        No paid predictions. No hidden charges.
+    </p>
+
+    <button onclick="startJourney()">
+        Explore Your Birth Chart
+    </button>
+
+</section>
+
+<section class="features">
+
+    <div class="card">
+        <h3>🌙 Vedic Astrology</h3>
+        <p>Explore your Kundli, Nakshatras and planetary positions.</p>
+        <a href="birth-details.html">Get Started</a>
+    </div>
+
+    <div class="card">
+        <h3>🔯 Kundli Chart</h3>
+        <p>View your traditional North Indian birth chart.</p>
+        <a href="kundli.html">View Kundli</a>
+    </div>
+
+    <div class="card">
+        <h3>⭐ Planet Positions</h3>
+        <p>Explore planetary signs, degrees, Nakshatras and Padas.</p>
+        <a href="planet-positions.html">View Positions</a>
+    </div>
+
+    <div class="card">
+        <h3>🪐 Vimshottari Dasha</h3>
+        <p>Explore Mahadasha and Antardasha periods.</p>
+        <a href="dasha.html">View Dasha</a>
+    </div>
+
+    <div class="card">
+        <h3>🌍 More Features Coming</h3>
+        <p>Western astrology and Kannada, Telugu and Hindi language support are planned for future updates.</p>
+    </div>
+
+</section>
+
+<footer>
+    Astrology is a traditional belief system, not a scientifically
+    proven method of predicting the future.
+    <br><br>
+    © 2026 Honest Jyotish
+</footer>
+
+<script>
+function startJourney() {
+    window.location.href = "birth-details.html";
+}
+</script>
+
+</body>
+</html>

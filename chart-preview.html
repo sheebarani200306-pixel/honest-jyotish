@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chart Preview - Honest Jyotish</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f7f1e8;
+  color: #34251c;
+  padding: 20px;
+  text-align: center;
+}
+.card {
+  max-width: 420px;
+  margin: 30px auto;
+  padding: 24px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 3px 12px #0002;
+}
+button {
+  padding: 12px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #704214;
+  color: white;
+  font-size: 16px;
+}
+a { color: #704214; }
+p { line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>✦ Honest Jyotish ✦</h2>
+  <h3>Your Birth Details</h3>
+  <div id="details">Loading your birth details...</div>
+  <p>Check that your birth details are correct before calculating your planetary positions.</p>
+  <button onclick="window.location.href='planet-positions.html'">
+  Calculate Planet Positions
+  </button>
+
+  </>
+  <p><a href="birth-details.html">Edit Birth Details</a></p>
+  <p><a href="index.html">Back to Home</a></p>
+</div>
+
+<script>
+const data =
+  JSON.parse(sessionStorage.getItem("birthDetails") || "null") ||
+  JSON.parse(localStorage.getItem("birthDetails") || "null");
+
+const box = document.getElementById("details");
+
+if (!data) {
+  box.innerHTML = "<p>No birth details found. Please enter your details first.</p>";
+} else {
+  box.innerHTML = `
+    <p><b>Name:</b> ${data.name || ""}</p>
+    <p><b>Date of Birth:</b> ${data.date || data.dob || ""}</p>
+    <p><b>Birth Time:</b> ${data.time || ""}</p>
+    <p><b>Birth Place:</b> ${data.place || ""}</p>
+    <p><b>System:</b> ${data.system || "Vedic"}</p>
+  `;
+}
+</script>
+
+</body>
+</html>

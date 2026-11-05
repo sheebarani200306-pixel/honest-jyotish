@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planet Interpretations - Honest Jyotish</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #faf4e9;
+  color: #35251b;
+  margin: 0;
+  padding: 18px;
+}
+header {
+  text-align: center;
+  padding: 15px;
+}
+h1 { color: #87521e; }
+.intro {
+  text-align: center;
+  line-height: 1.6;
+}
+.card {
+  background: white;
+  padding: 18px;
+  margin: 16px 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #00000012;
+}
+.card h3 { color: #87521e; }
+.label {
+  font-weight: bold;
+  color: #704214;
+}
+a { color: #87521e; }
+.disclaimer {
+  font-size: 13px;
+  line-height: 1.6;
+  background: #eee5d6;
+  padding: 14px;
+  border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>✦ Honest Jyotish ✦</h1>
+  <h2>Planetary Interpretations</h2>
+  <p>Understanding the traditional meanings of your birth chart</p>
+</header>
+
+<div class="intro" id="birthInfo"></div>
+
+<div id="interpretations">
+  <div class="card">Loading planetary interpretations...</div>
+</div>
+
+<div class="disclaimer">
+  <b>Important note:</b> These interpretations describe traditional
+  Vedic astrology beliefs. Astrology is not scientifically validated
+  as a method of predicting personality or future events.
+  These descriptions are for cultural and educational understanding.
+</div>
+
+<p style="text-align:center">
+  <a href="kundli.html">View Kundli</a> |
+  <a href="index.html">Back to Home</a>
+</p>
+
+<script>
+
+const chart =
+  JSON.parse(localStorage.getItem("jyotishChart") || "null") ||
+  JSON.parse(sessionStorage.getItem("jyotishChart") || "null");
+
+const birth =
+  JSON.parse(localStorage.getItem("birthDetails") || "null") ||
+  JSON.parse(sessionStorage.getItem("birthDetails") || "null");
+
+const signs = [
+  "Mesha", "Vrishabha", "Mithuna", "Karka",
+  "Simha", "Kanya", "Tula", "Vrischika",
+  "Dhanu", "Makara", "Kumbha", "Meena"
+];
+
+const planetMeanings = {
+  Sun: "Traditionally represents identity, confidence, authority, vitality and the relationship with father or leadership.",
+  Moon: "Traditionally represents emotions, mind, comfort, memory, mother and inner wellbeing.",
+  Mars: "Traditionally represents courage, energy, action, competition, strength and determination.",
+  Mercury: "Traditionally represents communication, learning, intelligence, business and analytical thinking.",
+  Jupiter: "Traditionally represents wisdom, knowledge, teachers, ethics, spirituality and expansion.",
+  Venus: "Traditionally represents love, relationships, beauty, art, comfort and enjoyment.",
+  Saturn: "Traditionally represents discipline, responsibility, patience, hard work, limitations and long-term effort.",
+  Rahu: "Traditionally represents ambition, worldly desires, unusual interests, innovation and intense focus.",
+  Ketu: "Traditionally represents detachment, introspection, spirituality, past experiences and liberation."
+};
+
+const houseMeanings = [
+  "Self, personality, physical appearance and personal approach to life.",
+  "Family, speech, savings, food and accumulated wealth.",
+  "Courage, communication, siblings, skills and personal effort.",
+  "Home, mother, emotional foundations, property and education.",
+  "Creativity, children, intelligence, learning and traditional speculation.",
+  "Health, daily work, service, debts and challenges.",
+  "Marriage, partnerships, agreements and business relationships.",
+  "Transformation, shared resources, research and hidden matters.",
+  "Higher education, teachers, philosophy, religion and long-distance journeys.",
+  "Career, public responsibilities, reputation and professional activities.",
+  "Income, friendships, networks, ambitions and achievements.",
+  "Expenses, isolation, foreign connections, sleep and spiritual retreat."
+];
+
+const signMeanings = {
+  Mesha: "associated with initiative, courage and action.",
+  Vrishabha: "associated with stability, patience and material security.",
+  Mithuna: "associated with communication, curiosity and adaptability.",
+  Karka: "associated with care, emotions and protection.",
+  Simha: "associated with creativity, leadership and self-expression.",
+  Kanya: "associated with analysis, organisation and practical skills.",
+  Tula: "associated with balance, relationships and cooperation.",
+  Vrischika: "associated with depth, determination and transformation.",
+  Dhanu: "associated with exploration, philosophy and learning.",
+  Makara: "associated with discipline, responsibility and ambition.",
+  Kumbha: "associated with originality, ideas and social concerns.",
+  Meena: "associated with imagination, compassion and spirituality."
+};
+
+function getSign(value) {
+  if (typeof value === "string") {
+    const match = signs.find(
+      s => s.toLowerCase() === value.toLowerCase()
+    );
+    if (match) return match;
+  }
+
+  if (typeof value === "number") {
+    return signs[Math.floor(value / 30) % 12];
+  }
+
+  return "";
+}
+
+function getLongitude(item) {
+  if (typeof item === "number") return item;
+
+  if (item && typeof item === "object") {
+    const value =
+      item.longitude ??
+      item.lon ??
+      item.position ??
+      item.absoluteLongitude;
+
+    if (typeof value === "number") return value;
+  }
+
+  return null;
+}
+
+function getDegree(item) {
+  if (item && typeof item === "object") {
+    if (typeof item.degree === "number") return item.degree;
+
+    if (typeof item.longitude === "number") {
+      return item.longitude % 30;
+    }
+  }
+
+  const lon = getLongitude(item);
+  return lon === null ? null : lon % 30;
+}
+
+function getPlanetSign(item) {
+  if (item && typeof item === "object") {
+    const value =
+      item.sign ??
+      item.rashi ??
+      item.signName;
+
+    const found = getSign(value);
+    if (found) return found;
+  }
+
+  const lon = getLongitude(item);
+  return lon === null ? "" : getSign(lon);
+}
+
+function getAscendantSign() {
+  const possible = [
+    chart.ascendantSign,
+    chart.lagnaSign,
+    chart.ascendant,
+    chart.lagna
+  ];
+
+  for (const value of possible) {
+    if (typeof value === "string") {
+      const found = getSign(value);
+      if (found) return found;
+    }
+
+    if (value && typeof value === "object") {
+      const found = getSign(
+        value.sign || value.rashi || value.signName
+      );
+      if (found) return found;
+
+      const lon = getLongitude(value);
+      if (lon !== null) return getSign(lon);
+    }
+  }
+
+  const lon =
+    chart.ascendantLongitude ??
+    chart.lagnaLongitude;
+
+  if (typeof lon === "number") return getSign(lon);
+
+  return "";
+}
+
+function showInterpretations() {
+
+  const output = document.getElementById("interpretations");
+
+  if (!chart) {
+    output.innerHTML = `
+      <div class="card">
+        <h3>No birth chart found</h3>
+        <p>Please calculate your planetary positions first.</p>
+        <a href="planet-positions.html">Go to Planet Positions</a>
+      </div>`;
+    return;
+  }
+
+  const ascendant = getAscendantSign() || "Karka";
+  const ascIndex = signs.indexOf(ascendant);
+
+  const name = birth?.name || "Your chart";
+  const date = birth?.date || birth?.dob || "";
+
+  document.getElementById("birthInfo").innerHTML =
+    `<p><b>${name}</b><br>${date}</p>
+     <p><b>Lagna:</b> ${ascendant || "Not available"}</p>`;
+
+  let planets = chart.planets || chart.positions || [];
+
+  if (!Array.isArray(planets)) {
+    planets = Object.entries(planets).map(([name, value]) => ({
+      name,
+      ...((typeof value === "object" && value !== null)
+        ? value
+        : { longitude: value })
+    }));
+  }
+
+  const order = [
+    "Sun", "Moon", "Mars", "Mercury", "Jupiter",
+    "Venus", "Saturn", "Rahu", "Ketu"
+  ];
+
+  let html = "";
+
+  order.forEach(name => {
+
+    const item = planets.find(p =>
+      String(p.name || p.planet || "").toLowerCase() ===
+      name.toLowerCase()
+    );
+
+    if (!item) return;
+
+    const sign = getPlanetSign(item);
+    const degree = getDegree(item);
+
+    let house = null;
+
+    if (ascIndex >= 0 && signs.indexOf(sign) >= 0) {
+      house = (signs.indexOf(sign) - ascIndex + 12) % 12 + 1;
+    }
+
+    const nakshatra =
+      item.nakshatra || item.star || "Not available";
+
+    const pada = item.pada
+      ? "Pada " + item.pada
+      : "";
+
+    const signMeaning = signMeanings[sign] || "";
+
+    html += `
+      <div class="card">
+        <h3>${name}</h3>
+
+        <p><span class="label">Sign:</span>
+        ${sign || "Not available"}</p>
+
+        <p><span class="label">Degree:</span>
+        ${degree === null ? "Not available" :
+          degree.toFixed(2) + "°"}</p>
+
+        <p><span class="label">House:</span>
+        ${house || "Not available"}</p>
+
+        <p><span class="label">Nakshatra:</span>
+        ${nakshatra} ${pada}</p>
+
+        <p><span class="label">Traditional planetary meaning:</span><br>
+        ${planetMeanings[name]}</p>
+
+        <p><span class="label">Sign interpretation:</span><br>
+        ${signMeaning || "Not available"}</p>
+
+        <p><span class="label">House interpretation:</span><br>
+        ${house ? houseMeanings[house - 1] :
+          "House information is not available."}</p>
+      </div>
+    `;
+  });
+
+  output.innerHTML = html ||
+    `<div class="card">Planet information could not be read.
+    Please calculate your planetary positions again.</div>`;
+}
+
+showInterpretations();
+
+</script>
+
+</body>
+</html>
