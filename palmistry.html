@@ -84,6 +84,20 @@ a {
     margin-top: 15px;
 }
 
+.consent-box {
+    background: #30264b;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 15px 0;
+    color: #eee3d0;
+    text-align: left;
+    line-height: 1.6;
+}
+
+.consent-box input {
+    accent-color: #f5cf83;
+}
+
 </style>
 </head>
 
@@ -108,6 +122,15 @@ Capture your palm and prepare for a personalised reading.
 </select>
 
 <h3>Step 2: Open Your Camera</h3>
+
+<div class="consent-box">
+    <label>
+        <input type="checkbox" id="privacyConsent">
+        I agree to let Honest Jyotish analyse my palm photograph
+        using an AI service. I understand that my photograph
+        will be sent for analysis when that feature is enabled.
+    </label>
+</div>
 
 <p>
 Place your palm clearly in front of the camera.
@@ -195,6 +218,14 @@ const photo = document.getElementById("photo");
 
 async function startCamera() {
 
+    if (!document.getElementById("privacyConsent").checked) {
+
+        document.getElementById("status").textContent =
+            "Please accept the privacy consent before opening the camera.";
+
+        return;
+    }
+
     try {
 
         if (!navigator.mediaDevices ||
@@ -202,6 +233,8 @@ async function startCamera() {
 
             throw new Error("Camera API unavailable");
         }
+
+        stopCamera();
 
         stream = await navigator.mediaDevices.getUserMedia({
 
@@ -230,19 +263,20 @@ async function startCamera() {
         }
 
         if (capabilities.torch) {
-
             torchButton.classList.remove("hidden");
-
         } else {
-
             torchButton.classList.add("hidden");
-
         }
 
         video.classList.remove("hidden");
 
         document.getElementById("capture")
             .classList.remove("hidden");
+
+        photo.classList.add("hidden");
+
+        document.getElementById("retake")
+            .classList.add("hidden");
 
         document.getElementById("status").textContent =
             "Camera ready! Show your full palm clearly.";
@@ -264,7 +298,6 @@ async function startCamera() {
 // FLASHLIGHT ON / OFF
 
 async function toggleTorch() {
-  alert("Flashlight button is responding!");
 
     const track = stream?.getVideoTracks()[0];
 
@@ -304,13 +337,13 @@ async function toggleTorch() {
 
     catch (error) {
 
-    torchOn = false;
+        torchOn = false;
 
-    document.getElementById("torchButton").textContent =
-        "🔦 Flashlight ON";
+        document.getElementById("torchButton").textContent =
+            "🔦 Flashlight ON";
 
-    document.getElementById("status").textContent =
-        "Flashlight error: " + error.name + " - " + error.message;
+        document.getElementById("status").textContent =
+            "Flashlight could not be activated on this device.";
 
     }
 
