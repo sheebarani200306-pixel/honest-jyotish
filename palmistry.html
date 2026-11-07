@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Personal Palmistry Scanner | Honest Jyotish</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 20px;
+    background: #100d24;
+    color: #f5cf83;
+    font-family: Georgia, serif;
+    text-align: center;
+}
+
+h1 {
+    margin-top: 25px;
+}
+
+p {
+    color: #eee3d0;
+    line-height: 1.6;
+}
+
+.card {
+    background: #211a3b;
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+button, select {
+    padding: 13px;
+    margin: 8px;
+    border: none;
+    border-radius: 8px;
+    background: #f5cf83;
+    color: #100d24;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+video, canvas, #photo {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 12px;
+    margin-top: 15px;
+}
+
+.hidden {
+    display: none;
+}
+
+.note {
+    font-size: 13px;
+    color: #c8b9a0;
+}
+
+a {
+    color: #f5cf83;
+}
+</style>
+</head>
+
+<body>
+
+<h1>✦ HONEST JYOTISH ✦</h1>
+
+<h2>🖐 Personal Palmistry Scanner</h2>
+
+<p>
+Explore traditional palmistry through your hand.
+Capture your palm and prepare for a personalised reading.
+</p>
+
+<div class="card">
+
+<h3>Step 1: Select Your Hand</h3>
+
+<select id="hand">
+<option value="Right">Right Hand</option>
+<option value="Left">Left Hand</option>
+</select>
+
+<h3>Step 2: Open Your Camera</h3>
+
+<p>Place your palm clearly in front of the camera.</p>
+
+<button onclick="startCamera()">📷 Open Camera</button>
+
+<video id="video" autoplay playsinline class="hidden"></video>
+
+<br>
+
+<button id="capture" class="hidden" onclick="takePhoto()">
+Capture Palm
+</button>
+
+<canvas id="canvas" class="hidden"></canvas>
+
+<img id="photo" class="hidden" alt="Captured palm">
+
+<br>
+
+<button id="retake" class="hidden" onclick="retakePhoto()">
+Retake Photo
+</button>
+
+<p id="status"></p>
+
+</div>
+
+<div class="card">
+
+<h3>🔮 Your Palmistry Reading</h3>
+
+<p id="result">
+Your palm reading will appear here after we connect
+the palm-analysis system.
+</p>
+
+<p class="note">
+Traditional palmistry is a belief system and is not
+a scientifically proven method of predicting the future.
+</p>
+
+</div>
+
+<p><a href="index.html">← Back to Honest Jyotish</a></p>
+
+<script>
+
+let stream = null;
+
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const photo = document.getElementById("photo");
+
+async function startCamera() {
+
+    try {
+
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: "environment"
+            },
+            audio: false
+        });
+
+        video.srcObject = stream;
+
+        video.classList.remove("hidden");
+        document.getElementById("capture").classList.remove("hidden");
+
+        document.getElementById("status").textContent =
+            "Camera ready! Show your full palm clearly.";
+
+    } catch (error) {
+
+        document.getElementById("status").textContent =
+            "Camera access failed. Please allow camera permission and try again.";
+
+    }
+}
+
+function takePhoto() {
+
+    if (!stream) return;
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    canvas.getContext("2d").drawImage(
+        video, 0, 0, canvas.width, canvas.height
+    );
+
+    photo.src = canvas.toDataURL("image/jpeg", 0.9);
+
+    photo.classList.remove("hidden");
+    video.classList.add("hidden");
+    canvas.classList.add("hidden");
+
+    document.getElementById("capture").classList.add("hidden");
+    document.getElementById("retake").classList.remove("hidden");
+
+    stopCamera();
+
+    document.getElementById("status").textContent =
+        document.getElementById("hand").value +
+        " palm captured successfully!";
+}
+
+function retakePhoto() {
+
+    photo.classList.add("hidden");
+    document.getElementById("retake").classList.add("hidden");
+
+    startCamera();
+}
+
+function stopCamera() {
+
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+    }
+
+}
+
+window.addEventListener("pagehide", stopCamera);
+
+</script>
+
+</body>
+</html>
