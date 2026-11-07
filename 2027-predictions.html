@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>2027 Rashifal | Honest Jyotish</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 15px;
+    background: #100d24;
+    color: #f5e9d0;
+    font-family: Georgia, serif;
+    line-height: 1.7;
+}
+
+header {
+    text-align: center;
+    padding: 25px 10px;
+}
+
+h1, h2, h3 {
+    color: #f5cf83;
+}
+
+h1 {
+    font-size: 30px;
+}
+
+.subtitle {
+    color: #d7c39a;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 9px;
+    margin: 20px auto;
+    max-width: 950px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #f5cf83;
+    border: 1px solid #c69b4c;
+    border-radius: 20px;
+    padding: 7px 13px;
+    font-size: 14px;
+}
+
+nav a:hover {
+    background: #f5cf83;
+    color: #100d24;
+}
+
+.intro, .transits, .prediction {
+    background: #211a3b;
+    border: 1px solid #51416f;
+    border-radius: 14px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 950px;
+}
+
+.rashi-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 950px;
+    margin: 20px auto;
+}
+
+.rashi-buttons button {
+    background: #211a3b;
+    color: #f5cf83;
+    border: 1px solid #c69b4c;
+    padding: 13px 5px;
+    border-radius: 10px;
+    font-family: Georgia, serif;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.rashi-buttons button:hover,
+.rashi-buttons button.active {
+    background: #f5cf83;
+    color: #100d24;
+}
+
+.prediction {
+    display: none;
+}
+
+.prediction.active {
+    display: block;
+}
+
+.prediction h2 {
+    border-bottom: 1px solid #80663c;
+    padding-bottom: 10px;
+}
+
+.prediction h3 {
+    margin-top: 25px;
+}
+
+.prediction li {
+    margin-bottom: 8px;
+}
+
+.note {
+    color: #d5c5a5;
+    font-size: 14px;
+}
+
+footer {
+    text-align: center;
+    padding: 25px 10px;
+    color: #c7b58f;
+    font-size: 13px;
+}
+
+@media(max-width: 480px) {
+    .rashi-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>2027 Vedic Rashifal</h1>
+    <p class="subtitle">
+        Annual Predictions for All 12 Moon Signs
+    </p>
+    <p>Traditional Vedic Astrology | Lahiri Sidereal System</p>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="index.html#birth">Birth Details</a>
+    <a href="index.html#kundli">Kundli</a>
+    <a href="index.html#positions">Planet Positions</a>
+    <a href="index.html#dasha">Vimshottari Dasha</a>
+    <a href="2027-predictions.html">2027 Rashifal</a>
+</nav>
+
+<section class="intro">
+    <h2>About the 2027 Predictions</h2>
+
+    <p>
+    The year 2027 brings important planetary movements
+    according to the traditional Vedic sidereal zodiac.
+    Jupiter, Saturn, Rahu and Ketu are considered
+    important influences in yearly horoscope interpretation.
+    </p>
+
+    <p>
+    These predictions are written according to Janma Rashi,
+    meaning the Moon sign at birth. They are general
+    interpretations and are not personalised birth-chart readings.
+    </p>
+
+    <p>
+    For a personalised prediction, the Ascendant, Moon degree,
+    Nakshatra, planetary strengths, divisional charts and
+    Vimshottari Dasha must also be considered.
+    </p>
+</section>
+
+<section class="transits">
+    <h2>Major Planetary Transits of 2027</h2>
+
+    <h3>Jupiter - Guru</h3>
+    <ul>
+        <li>Begins the year in Leo.</li>
+        <li>Returns to Cancer around 25 January.</li>
+        <li>Enters Leo around 26 June.</li>
+        <li>Enters Virgo around 26 November.</li>
+    </ul>
+
+    <h3>Saturn - Shani</h3>
+    <ul>
+        <li>Begins the year in Pisces.</li>
+        <li>Enters Aries around 3 June.</li>
+        <li>Returns to Pisces around 20 October.</li>
+    </ul>
+
+    <h3>Rahu and Ketu</h3>
+    <ul>
+        <li>Rahu remains in Capricorn under the Lahiri calculation used here.</li>
+        <li>Ketu remains in Cancer.</li>
+    </ul>
+
+    <p class="note">
+    Transit dates are approximate Indian calendar dates.
+    Mean-node and true-node calculations can differ.
+    </p>
+</section>
+
+<h2 style="text-align:center;">Select Your Janma Rashi</h2>
+
+<div class="rashi-buttons">
+    <button onclick="showRashi('mesha',this)">♈ Mesha</button>
+    <button onclick="showRashi('vrishabha',this)">♉ Vrishabha</button>
+    <button onclick="showRashi('mithuna',this)">♊ Mithuna</button>
+    <button onclick="showRashi('karka',this)">♋ Karka</button>
+    <button onclick="showRashi('simha',this)">♌ Simha</button>
+    <button onclick="showRashi('kanya',this)">♍ Kanya</button>
+    <button onclick="showRashi('tula',this)">♎ Tula</button>
+    <button onclick="showRashi('vrischika',this)">♏ Vrischika</button>
+    <button onclick="showRashi('dhanu',this)">♐ Dhanu</button>
+    <button onclick="showRashi('makara',this)">♑ Makara</button>
+    <button onclick="showRashi('kumbha',this)">♒ Kumbha</button>
+    <button onclick="showRashi('meena',this)">♓ Meena</button>
+</div>
+
+<!-- MESHA -->
+
+<section id="mesha" class="prediction">
+<h2>♈ Mesha Rashi - Aries 2027</h2>
+
+<h3>Overall Year</h3>
+<ul>
+<li>2027 may bring important personal and professional changes.</li>
+<li>Patience and discipline will be important throughout the year.</li>
+<li>You may become more focused on long-term goals.</li>
+<li>Some plans may require additional time and effort.</li>
+</ul>
+
+<h3>Career and Business</h3>
+<ul>
+<li>Rahu's tenth-house influence may increase professional ambition.</li>
+<li>New responsibilities may arise at work.</li>
+<li>Job seekers should strengthen their skills and professional contacts.</li>
+<li>Business owners should examine partnerships carefully.</li>
+<li>Avoid changing careers without proper planning.</li>
+</ul>
+
+<h3>Money and Finances</h3>
+<ul>
+<li>Home-related expenses may need attention.</li>
+<li>Prepare a realistic monthly budget.</li>
+<li>Avoid unnecessary borrowing.</li>
+<li>Review investment risks before making commitments.</li>
+</ul>
+
+<h3>Love and Marriage</h3>
+<ul>
+<li>Communication will be important in relationships.</li>
+<li>Unmarried people may explore new relationships.</li>
+<li>Married couples should give each other enough time.</li>
+<li>Avoid arguments caused by impatience.</li>
+</ul>
+
+<h3>Family and Home</h3>
+<ul>
+<li>Family responsibilities may increase.</li>
+<li>Property matters may require careful examination.</li>
+<li>Spend meaningful time with parents.</li>
+</ul>
+
+<h3>Education</h3>
+<ul>
+<li>Students should maintain a regular study schedule.</li>
+<li>Competitive examinations require consistent preparation.</li>
+<li>Professional training may improve future opportunities.</li>
+</ul>
+
+<h3>Health and Wellbeing</h3>
+<ul>
+<li>Maintain regular sleeping habits.</li>
+<li>Avoid excessive work pressure.</li>
+<li>Make time for exercise and relaxation.</li>
+</ul>
+
+<h3>Travel and Opportunities</h3>
+<ul>
+<li>Career-related travel may become important.</li>
+<li>Long-distance opportunities may attract your attention.</li>
+<li>Check documents and expenses before travelling.</li>
+</ul>
+
+<h3>Important Guidance</h3>
+<ul>
+<li>Be patient when results take time.</li>
+<li>Maintain financial discipline.</li>
+<li>Think carefully before making major decisions.</li>
+</ul>
+</section>
+
+<!-- VRISHABHA -->
+
+<section id="vrishabha" class="prediction">
+<h2>♉ Vrishabha Rashi - Taurus 2027</h2>
+
+<h3>Overall Year</h3>
+<ul>
+<li>2027 may encourage greater attention to stability and security.</li>
+<li>Career and family priorities may change.</li>
+<li>You may become interested in improving your living conditions.</li>
+<li>Practical thinking can help you manage challenges.</li>
+</ul>
+
+<h3>Career and Business</h3>
+<ul>
+<li>Professional networking may create useful connections.</li>
+<li>Foreign clients or distant organisations may attract your attention.</li>
+<li>Business owners should monitor expenses carefully.</li>
+<li>Career responsibilities may change during the year.</li>
+<li>Developing new skills may support professional growth.</li>
+</ul>
+
+<h3>Money and Finances</h3>
+<ul>
+<li>Home and property expenses may require planning.</li>
+<li>Build savings gradually.</li>
+<li>Avoid unnecessary loans.</li>
+<li>Examine investment proposals carefully.</li>
+</ul>
+
+<h3>Love and Marriage</h3>
+<ul>
+<li>Honest communication can strengthen relationships.</li>
+<li>Unmarried people may meet potential partners through social connections.</li>
+<li>Married couples should discuss financial matters openly.</li>
+<li>Avoid making emotional decisions during disagreements.</li>
+</ul>
+
+<h3>Family and Home</h3>
+<ul>
+<li>Home improvement may become a priority.</li>
+<li>Family members may need your support.</li>
+<li>Property documentation should be checked carefully.</li>
+</ul>
+
+<h3>Education</h3>
+<ul>
+<li>Students should focus on practical learning.</li>
+<li>Professional courses may be beneficial.</li>
+<li>Consistent preparation can improve examination performance.</li>
+</ul>
+
+<h3>Health and Wellbeing</h3>
+<ul>
+<li>Maintain a balanced daily routine.</li>
+<li>Give attention to sleep and physical activity.</li>
+<li>Manage stress through healthy habits.</li>
+</ul>
+
+<h3>Travel and Opportunities</h3>
+<ul>
+<li>Long-distance travel may become a consideration.</li>
+<li>Higher education opportunities may attract attention.</li>
+<li>Check travel budgets and documents carefully.</li>
+</ul>
+
+<h3>Important Guidance</h3>
+<ul>
+<li>Focus on long-term financial security.</li>
+<li>Be patient with professional changes.</li>
+<li>Give sufficient attention to family life.</li>
+</ul>
+</section>
+
+<!-- MITHUNA -->
+
+<section id="mithuna" class="prediction">
+<h2>♊ Mithuna Rashi - Gemini 2027</h2>
+
+<h3>Overall Year</h3>
+<ul>
+<li>The year may encourage personal development and new experiences.</li>
+<li>Communication and decision-making may become important themes.</li>
+<li>You may reconsider certain financial and personal priorities.</li>
+<li>Careful planning can help you use opportunities effectively.</li>
+</ul>
+
+<h3>Career and Business</h3>
+<ul>
+<li>New responsibilities may develop through professional contacts.</li>
+<li>Communication-related work may receive attention.</li>
+<li>Business owners should review contracts and agreements.</li>
+<li>Professional networking may help you discover opportunities.</li>
+<li>Avoid workplace misunderstandings.</li>
+</ul>
+
+<h3>Money and Finances</h3>
+<ul>
+<li>Review your savings and financial commitments.</li>
+<li>Unexpected expenses should be handled through proper planning.</li>
+<li>Avoid risky financial decisions.</li>
+<li>Focus on building a stable emergency fund.</li>
+</ul>
+
+<h3>Love and Marriage</h3>
+<ul>
+<li>Clear communication may strengthen relationships.</li>
+<li>Unmarried people may meet someone through friends or work.</li>
+<li>Married couples should avoid unnecessary suspicion.</li>
+<li>Give your partner enough time and attention.</li>
+</ul>
+
+<h3>Family and Home</h3>
+<ul>
+<li>Family conversations may influence future decisions.</li>
+<li>Give attention to household responsibilities.</li>
+<li>Maintain respectful communication with relatives.</li>
+</ul>
+
+<h3>Education</h3>
+<ul>
+<li>Students may benefit from structured study plans.</li>
+<li>Writing, communication and technical skills deserve attention.</li>
+<li>Avoid distractions during important preparation periods.</li>
+</ul>
+
+<h3>Health and Wellbeing</h3>
+<ul>
+<li>Maintain regular sleeping hours.</li>
+<li>Make time for physical activity.</li>
+<li>Take breaks when mental pressure increases.</li>
+</ul>
+
+<h3>Travel and Opportunities</h3>
+<ul>
+<li>Short-distance travel may become more frequent.</li>
+<li>Educational activities may introduce new connections.</li>
+<li>Prepare carefully for important journeys.</li>
+</ul>
+
+<h3>Important Guidance</h3>
+<ul>
+<li>Think before speaking during disagreements.</li>
+<li>Keep financial records organised.</li>
+<li>Focus on consistent personal improvement.</li>
+</ul>
+</section>
+
+<!-- KARKA -->
+
+<section id="karka" class="prediction">
+<h2>♋ Karka Rashi - Cancer 2027</h2>
+
+<h3>Overall Year</h3>
+<ul>
+<li>Financial planning and personal security may become important.</li>
+<li>You may reconsider your professional direction.</li>
+<li>Family responsibilities may require additional attention.</li>
+<li>Patience can help you manage changing circumstances.</li>
+</ul>
+
+<h3>Career and Business</h3>
+<ul>
+<li>Career visibility may increase during parts of the year.</li>
+<li>Professional responsibilities may become more demanding.</li>
+<li>Business owners should plan expansion carefully.</li>
+<li>Maintain good relationships with colleagues.</li>
+<li>Review important professional agreements.</li>
+</ul>
+
+<h3>Money and Finances</h3>
+<ul>
+<li>Develop a clear savings strategy.</li>
+<li>Family-related expenses may need budgeting.</li>
+<li>Avoid lending money without clear agreements.</li>
+<li>Review long-term financial commitments.</li>
+</ul>
+
+<h3>Love and Marriage</h3>
+<ul>
+<li>Emotional understanding may improve relationships.</li>
+<li>Unmarried people may consider serious commitments.</li>
+<li>Married couples should communicate openly.</li>
+<li>Avoid allowing outside opinions to create conflict.</li>
+</ul>
+
+<h3>Family and Home</h3>
+<ul>
+<li>Family responsibilities may become more prominent.</li>
+<li>Property and household decisions need careful consideration.</li>
+<li>Support family members while maintaining healthy boundaries.</li>
+</ul>
+
+<h3>Education</h3>
+<ul>
+<li>Students should organise their study schedules.</li>
+<li>Practical knowledge may improve confidence.</li>
+<li>Seek help when subjects become difficult.</li>
+</ul>
+
+<h3>Health and Wellbeing</h3>
+<ul>
+<li>Maintain healthy eating and sleeping habits.</li>
+<li>Avoid ignoring persistent physical discomfort.</li>
+<li>Give attention to emotional wellbeing.</li>
+</ul>
+
+<h3>Travel and Opportunities</h3>
+<ul>
+<li>Professional travel may create useful experiences.</li>
+<li>Family-related journeys may require planning.</li>
+<li>Check expenses before making travel commitments.</li>
+</ul>
+
+<h3>Important Guidance</h3>
+<ul>
+<li>Balance career ambitions with family responsibilities.</li>
+<li>Maintain financial discipline.</li>
+<li>Avoid making decisions under emotional pressure.</li>
+</ul>
+</section>
+
+<!-- SIMHA -->
+
+<section id="simha" class="prediction">
+<h2>♌ Simha Rashi - Leo 2027</h2>
+
+<h3>Overall Year</h3>
+<ul>
+<li>Personal development may become a major theme.</li>
+<li>You may reconsider your long-term ambitions.</li>
+<li>Opportunities for learning and self-improvement may arise.</li>
+<li>Remain patient while adjusting to new responsibilities.</li>
+</ul>
+
+<h3>Career and Business</h3>
+<ul>
+<li>Professional relationships may become important.</li>
+<li>Leadership responsibilities may require maturity.</li>
+<li>Business owners should examine partnership conditions.</li>
+<li>Professional training may improve future prospects.</li>
+<li>Avoid unnecessary competition with colleagues.</li>
+</ul>
+
+<h3>Money and Finances</h3>
+<ul>
+<li>Maintain a realistic household budget.</li>
+<li>Consider long-term savings goals.</li>
+<li>Review financial commitments before borrowing.</li>
+<li>Avoid unnecessary luxury purchases.</li>
+</ul>
+
+<h3>Love and Marriage</h3>
+<ul>
+<li>Relationships may benefit from greater understanding.</li>
+<li>Unmarried people may explore meaningful connections.</li>
+<li>Married couples should discuss future plans together.</li>
+<li>Avoid allowing pride to create misunderstandings.</li>
+</ul>
+
+<h3>Family and Home</h3>
+<ul>
+<li>Family responsibilities may require patience.</li>
+<li>Maintain respectful communication with elders.</li>
+<li>Give attention to household planning.</li>
+</ul>
+
+<h3>Education</h3>
+<ul>
+<li>Students may become interested in advanced learning.</li>
+<li>Consistent preparation will be important.</li>
+<li>Seek experienced guidance when necessary.</li>
+</ul>
+
+<h3>Health and Wellbeing</h3>
+<ul>
+<li>Maintain a healthy daily routine.</li>
+<li>Avoid excessive physical and mental pressure.</li>
+<li>Make time for rest and relaxation.</li>
+</ul>
+
+<h3>Travel and Opportunities</h3>
+<ul>
+<li>Educational or professional journeys may be considered.</li>
+<li>Long-distance connections may become useful.</li>
+<li>Prepare carefully before making travel plans.</li>
+</ul>
+
+<h3>Important Guidance</h3>
+<ul>
+<li>Remain humble while taking leadership responsibilities.</li>
+<li>Listen carefully before making decisions.</li>
+<li>Maintain consistency in your goals.</li>
+</ul>
+</section>
+
+<!-- KANYA -->
+
+<section id="kanya" class="prediction">
+<h2>♍ Kanya Rashi - Virgo 2027</h2>
+
+<h3>Overall Year</h3>
+<ul>
+<li>Personal organisation may become especially important.</li>
+<li>You may focus more on long-term financial and professional security.</li>
+<li>Some responsibilities may require patience.</li>
+<li>Careful decision-making can help reduce unnecessary complications.</li>
+</ul>
+
+<h3>Career and Business</h3>
+<ul>
+<li>Professional changes may require careful preparation.</li>
+<li>Work behind the scenes may receive greater importance.</li>
+<li>Business owners should monitor expenses.</li>
+<li>Improve professional skills before pursuing new opportunities.</li>
+<li>Maintain clear communication with colleagues.</li>
+</ul>
+
+<h3>Money and Finances</h3>
+<ul>
+<li>Review savings and investment plans.</li>
+<li>Avoid unnecessary financial risks.</li>
+<li>Unexpected expenses may require a reserve fund.</li>
+<li>Plan carefully before purchasing property or vehicles.</li>
+</ul>
+
+<h3>Love and Marriage</h3>
+<ul>
+<li>Relationships may need additional understanding.</li>
+<li>Unmarried people should take time to assess compatibility.</li>
+<li>Married couples should discuss concerns calmly.</li>
+<li>Avoid overthinking small disagreements.</li>
+</ul>
+
+<h3>Family and Home</h3>
+<ul>
+<li>Family members may need practical support.</li>
+<li>Home-related responsibilities may increase.</li>
+<li>Give attention to important family discussions.</li>
+</ul>
+
+<h3>Education</h3>
+<ul>
+<li>Students may benefit from disciplined preparation.</li>
+<li>Research and analytical learning may receive attention.</li>
+<li>Prepare well before examinations.</li>
+</ul>
+
+<h3>Health and Wellbeing</h3>
+<ul>
+<li>Maintain consistent health routines.</li>
+<li>Avoid excessive stress and overwork.</li>
+<li>Seek professional medical guidance when necessary.</li>
+</ul>
+
+<h3>Travel and Opportunities</h3>
+<ul>
+<li>Work or educational travel may be considered.</li>
+<li>Foreign connections may attract attention.</li>
+<li>Check financial and legal details before travelling.</li>
+</ul>
+
+<h3>Important Guidance</h3>
+<ul>
+<li>Stay organised.</li>
+<li>Build financial security gradually.</li>
+<li>Avoid unnecessary worry about uncertain outcomes.</li>
+</ul>
+</section>
+
+<!-- TULA -->
+
+<section id="tula" class="prediction">
+<h2>♎ Tula Rashi - Libra 2027</h2>
+
+<h3>Overall Year</h3>
+<ul>
+<li>Relationships and professional connections may become important.</li>
+<li>You may reconsider your personal priorities.</li>
+<li>Long-term goals may require adjustments.</li>
+<li>Balanced decision-making will be useful.</li>
+</ul>
+
+<h3>Career and Business</h3>
+<ul>
+<li>Networking may help create professional opportunities.</li>
+<li>Partnerships may require clear agreements.</li>
+<li>Business owners should avoid unclear financial arrangements.</li>
+<li>Professional responsibilities may increase.</li>
+<li>Develop skills that improve your career prospects.</li>
+</ul>
+
+<h3>Money and Finances</h3>
+<ul>
+<li>Review shared financial responsibilities.</li>
+<li>Avoid unnecessary borrowing.</li>
+<li>Plan savings before making major purchases.</li>
+<li>Keep financial agreements documented.</li>
+</ul>
+
+<h3>Love and Marriage</h3>
+<ul>
+<li>Relationships may require patience and understanding.</li>
+<li>Unmarried people may consider serious partnerships.</li>
+<li>Married couples should make decisions together.</li>
+<li>Avoid allowing misunderstandings to grow.</li>
+</ul>
+
+<h3>Family and Home</h3>
+<ul>
+<li>Family discussions may require patience.</li>
+<li>Maintain balance between work and home.</li>
+<li>Support relatives without neglecting personal needs.</li>
+<li>Property and household decisions should be made carefully.</li>
+<li>Spend quality time with family members.</li>
+</ul>
+
+<h3>Education</h3>
+<ul>
+<li>Students may benefit from group learning.</li>
+<li>Consistent study habits remain important.</li>
+<li>Consider practical and career-oriented courses.</li>
+<li>Competitive examination preparation requires discipline.</li>
+<li>Learning new skills may create future opportunities.</li>
+</ul>
+
+<h3>Health and Wellbeing</h3>
+<ul>
+<li>Maintain regular exercise habits.</li>
+<li>Give attention to stress management.</li>
+<li>Make time for sufficient rest.</li>
+<li>Avoid ignoring persistent health concerns.</li>
+</ul>
+
+<h3>Travel and Opportunities</h3>
+<ul>
+<li>Professional contacts may introduce travel possibilities.</li>
+<li>Social and educational activities may expand your network.</li>
+<li>Plan travel expenses carefully.</li>
+<li>Check important documents before travelling.</li>
+</ul>
+
+<h3>Important Guidance</h3>
+<ul>
+<li>Maintain fairness in relationships.</li>
+<li>Read agreements before signing them.</li>
+<li>Balance personal ambitions with responsibilities.</li>
+<li>Avoid unnecessary arguments.</li>
+</ul>
+</section>
+
+<!-- VRISCHIKA -->
+
+<section id="vrischika" class="prediction">
+<h2>♏ Vrischika Rashi - Scorpio 2027</h2>
+
+<h3>Overall Year</h3>
+<ul>
+<li>Career development and personal discipline may receive attention.</li>
+<li>You may reconsider your long-term professional direction.</li>
+<li>Responsibilities may require greater organisation.</li>
+<li>Patience can help you handle complicated situations.</li>
+</ul>
+
+<h3>Career and Business</h3>
+<ul>
+<li>Professional opportunities may develop through consistent effort.</li>
+<li>Leadership responsibilities may increase.</li>
+<li>Business owners should examine operational risks.</li>
+<li>Maintain good relationships with colleagues.</li>
+<li>Avoid unnecessary workplace disputes.</li>
+</ul>
+
+<h3>Money and Finances</h3>
+<ul>
+<li>Financial planning should remain a priority.</li>
+<li>Review debts and repayment commitments.</li>
+<li>Avoid speculative investments.</li>
+<li>Build savings for future responsibilities.</li>
+</ul>
+
+<h3>Love and Marriage</h3>
+<ul>
+<li>Emotional openness may improve relationships.</li>
+<li>Unmarried people may meet potential partners through work or social contacts.</li>
+<li>Married couples should discuss concerns honestly.</li>
+<li>Avoid unnecessary suspicion and arguments.</li>
+</ul>
+
+<h3>Family and Home</h3>
+<ul>
+<li>Family responsibilities may require attention.</li>
+<li>Maintain communication with relatives.</li>
+<li>Plan important household expenses carefully.</li>
+<li>Give attention to the needs of elderly family members.</li>
+</ul>
+
+<h3>Education</h3>
+<ul>
+<li>Students should maintain concentration.</li>
+<li>Research and technical subjects may attract interest.</li>
+<li>Consistent preparation will be more useful than last-minute effort.</li>
+</ul>
+
+<h3>Health and Wellbeing</h3>
+<ul>
+<li>Maintain a regular daily routine.</li>
+<li>Avoid excessive work pressure.</li>
+<li>Give attention to physical and emotional wellbeing.</li>
+</ul>
+
+<h3>Travel and Opportunities</h3>
+<ul>
+<li>Short journeys may support professional activities.</li>
+<li>Networking may introduce useful opportunities.</li>
+<li>Check travel arrangements before departure.</li>
+</ul>
+
+<h3>Important Guidance</h3>
+<ul>
+<li>Remain disciplined in professional matters.</li>
+<li>Keep financial commitments under control.</li>
+<li>Use patience when handling disagreements.</li>
+</ul>
+</section>
+
+<!-- DHANU -->
+
+<section id="dhanu" class="prediction">
+<h2>♐ Dhanu Rashi - Sagittarius 2027</h2>
+
+<h3>Overall Year</h3>
+<ul>
+<li>Learning, personal growth and new experiences may become important.</li>
+<li>You may reconsider your educational or professional ambitions.</li>
+<li>Family and financial matters may require attention.</li>
+<li>Practical planning can support long-term progress.</li>
+</ul>
+
+<h3>Career and Business</h3>
+<ul>
+<li>Professional development may benefit from additional training.</li>
+<li>Creative and educational activities may attract interest.</li>
+<li>Business owners should examine expansion plans carefully.</li>
+<li>Maintain clear communication with professional partners.</li>
+<li>Avoid taking unnecessary career risks.</li>
+</ul>
+
+<h3>Money and Finances</h3>
+<ul>
+<li>Family-related expenses may need budgeting.</li>
+<li>Review savings goals regularly.</li>
+<li>Avoid impulsive purchases.</li>
+<li>Consider long-term financial stability.</li>
+</ul>
+
+<h3>Love and Marriage</h3>
+<ul>
+<li>Shared interests may strengthen relationships.</li>
+<li>Unmarried people may explore new connections.</li>
+<li>Married couples should give attention to family priorities.</li>
+<li>Honest communication can prevent misunderstandings.</li>
+</ul>
+
+<h3>Family and Home</h3>
+<ul>
+<li>Family discussions may influence important plans.</li>
+<li>Home-related decisions should be made carefully.</li>
+<li>Support family members while maintaining personal balance.</li>
+</ul>
+
+<h3>Education</h3>
+<ul>
+<li>Higher education may become an important goal.</li>
+<li>Students should focus on examination preparation.</li>
+<li>Practical experience may complement academic learning.</li>
+</ul>
+
+<h3>Health and Wellbeing</h3>
+<ul>
+<li>Maintain regular physical activity.</li>
+<li>Manage stress through healthy routines.</li>
+<li>Do not neglect rest during busy periods.</li>
+</ul>
+
+<h3>Travel and Opportunities</h3>
+<ul>
+<li>Long-distance travel may attract your interest.</li>
+<li>Educational journeys may create new experiences.</li>
+<li>Prepare travel budgets and documents carefully.</li>
+</ul>
+
+<h3>Important Guidance</h3>
+<ul>
+<li>Balance optimism with practical planning.</li>
+<li>Maintain financial discipline.</li>
+<li>Continue learning new skills.</li>
+</ul>
+</section>
+
+<!-- MAKARA -->
+
+<section id="makara" class="prediction">
+<h2>♑ Makara Rashi - Capricorn 2027</h2>
+
+<h3>Overall Year</h3>
+<ul>
+<li>Personal priorities and family responsibilities may change.</li>
+<li>You may focus more strongly on building long-term stability.</li>
+<li>Professional and financial decisions may require careful thought.</li>
+<li>Patience will be useful when managing uncertainty.</li>
+</ul>
+
+<h3>Career and Business</h3>
+<ul>
+<li>Professional relationships may become important.</li>
+<li>Career changes should be evaluated carefully.</li>
+<li>Business owners should review partnership responsibilities.</li>
+<li>Maintain a consistent professional routine.</li>
+<li>Avoid unnecessary workplace conflicts.</li>
+</ul>
+
+<h3>Money and Finances</h3>
+<ul>
+<li>Property and household expenses may require planning.</li>
+<li>Review loans and repayment schedules.</li>
+<li>Avoid risky financial commitments.</li>
+<li>Build savings gradually.</li>
+</ul>
+
+<h3>Love and Marriage</h3>
+<ul>
+<li>Relationships may need patience and understanding.</li>
+<li>Unmarried people may consider serious commitments.</li>
+<li>Married couples should discuss future responsibilities.</li>
+<li>Avoid allowing work pressure to affect relationships.</li>
+</ul>
+
+<h3>Family and Home</h3>
+<ul>
+<li>Family responsibilities may increase.</li>
+<li>Property decisions should be examined carefully.</li>
+<li>Spend time with parents and relatives.</li>
+</ul>
+
+<h3>Education</h3>
+<ul>
+<li>Students should create a disciplined study routine.</li>
+<li>Technical and professional skills may be useful.</li>
+<li>Prepare early for important examinations.</li>
+</ul>
+
+<h3>Health and Wellbeing</h3>
+<ul>
+<li>Maintain healthy sleeping habits.</li>
+<li>Avoid excessive work pressure.</li>
+<li>Make time for physical activity and relaxation.</li>
+</ul>
+
+<h3>Travel and Opportunities</h3>
+<ul>
+<li>Professional or family-related journeys may be considered.</li>
+<li>Foreign opportunities may require careful preparation.</li>
+<li>Check financial commitments before travelling.</li>
+</ul>
+
+<h3>Important Guidance</h3>
+<ul>
+<li>Build stability through consistent effort.</li>
+<li>Do not rush important decisions.</li>
+<li>Maintain healthy personal boundaries.</li>
+</ul>
+</section>
+
+<!-- KUMBHA -->
+
+<section id="kumbha" class="prediction">
+<h2>♒ Kumbha Rashi - Aquarius 2027</h2>
+
+<h3>Overall Year</h3>
+<ul>
+<li>Communication and personal development may become important themes.</li>
+<li>You may develop new professional and social connections.</li>
+<li>Some responsibilities may require additional patience.</li>
+<li>Long-term planning can help you manage changes.</li>
+</ul>
+
+<h3>Career and Business</h3>
+<ul>
+<li>Networking may create professional opportunities.</li>
+<li>Communication and technology-related skills may be useful.</li>
+<li>Business owners should maintain clear agreements.</li>
+<li>Professional responsibilities may require better organisation.</li>
+<li>Consider training that supports future career goals.</li>
+</ul>
+
+<h3>Money and Finances</h3>
+<ul>
+<li>Review personal savings and expenses.</li>
+<li>Avoid unnecessary borrowing.</li>
+<li>Keep financial records organised.</li>
+<li>Plan carefully before making large purchases.</li>
+</ul>
+
+<h3>Love and Marriage</h3>
+<ul>
+<li>Honest conversations may strengthen relationships.</li>
+<li>Unmarried people may meet someone through social connections.</li>
+<li>Married couples should make time for one another.</li>
+<li>Avoid misunderstandings caused by poor communication.</li>
+</ul>
+
+<h3>Family and Home</h3>
+<ul>
+<li>Family discussions may require patience.</li>
+<li>Home-related responsibilities may need attention.</li>
+<li>Maintain good communication with relatives.</li>
+</ul>
+
+<h3>Education</h3>
+<ul>
+<li>Students may benefit from practical learning.</li>
+<li>Technical and communication skills deserve attention.</li>
+<li>Regular revision can improve preparation.</li>
+</ul>
+
+<h3>Health and Wellbeing</h3>
+<ul>
+<li>Maintain a balanced daily routine.</li>
+<li>Give attention to rest and relaxation.</li>
+<li>Manage stress through healthy habits.</li>
+</ul>
+
+<h3>Travel and Opportunities</h3>
+<ul>
+<li>Short journeys may support learning and professional work.</li>
+<li>New contacts may introduce useful opportunities.</li>
+<li>Plan important journeys in advance.</li>
+</ul>
+
+<h3>Important Guidance</h3>
+<ul>
+<li>Communicate clearly.</li>
+<li>Maintain financial discipline.</li>
+<li>Remain patient while developing long-term plans.</li>
+</ul>
+</section>
+
+<!-- MEENA -->
+
+<section id="meena" class="prediction">
+<h2>♓ Meena Rashi - Pisces 2027</h2>
+
+<h3>Overall Year</h3>
+<ul>
+<li>Financial planning and personal priorities may receive attention.</li>
+<li>You may reconsider your long-term responsibilities.</li>
+<li>Professional and family matters may require balanced decisions.</li>
+<li>Patience and practical thinking will be useful.</li>
+</ul>
+
+<h3>Career and Business</h3>
+<ul>
+<li>Professional opportunities may develop through consistent effort.</li>
+<li>Business owners should review expenses and agreements.</li>
+<li>Work responsibilities may require greater organisation.</li>
+<li>Professional training may support future growth.</li>
+<li>Avoid making decisions without examining the details.</li>
+</ul>
+
+<h3>Money and Finances</h3>
+<ul>
+<li>Financial security may become an important priority.</li>
+<li>Review family expenses and savings goals.</li>
+<li>Avoid speculative financial decisions.</li>
+<li>Plan carefully before taking loans.</li>
+</ul>
+
+<h3>Love and Marriage</h3>
+<ul>
+<li>Relationships may benefit from emotional understanding.</li>
+<li>Unmarried people may explore serious relationships.</li>
+<li>Married couples should discuss financial and family plans.</li>
+<li>Avoid allowing misunderstandings to continue.</li>
+</ul>
+
+<h3>Family and Home</h3>
+<ul>
+<li>Family responsibilities may need attention.</li>
+<li>Maintain respectful communication with elders.</li>
+<li>Household financial planning may become important.</li>
+</ul>
+
+<h3>Education</h3>
+<ul>
+<li>Students should focus on disciplined preparation.</li>
+<li>Creative and academic interests may develop.</li>
+<li>Seek guidance when facing difficult subjects.</li>
+</ul>
+
+<h3>Health and Wellbeing</h3>
+<ul>
+<li>Maintain regular sleep and exercise habits.</li>
+<li>Avoid excessive mental pressure.</li>
+<li>Seek medical advice for persistent symptoms.</li>
+</ul>
+
+<h3>Travel and Opportunities</h3>
+<ul>
+<li>Professional journeys may create new experiences.</li>
+<li>Educational opportunities may require preparation.</li>
+<li>Check travel expenses and documentation carefully.</li>
+</ul>
+
+<h3>Important Guidance</h3>
+<ul>
+<li>Maintain financial discipline.</li>
+<li>Balance personal and family responsibilities.</li>
+<li>Make decisions based on practical information.</li>
+</ul>
+</section>
+
+<footer>
+    <p>Honest Jyotish</p>
+    <p>Traditional Vedic Astrology Interpretations</p>
+    <p>
+    Astrology is a traditional belief system and is not
+    scientifically established as a method of predicting
+    future events. These readings are for general information
+    and reflection, not medical, legal or financial advice.
+    </p>
+</footer>
+
+<script>
+function showRashi(id, button) {
+
+    document.querySelectorAll('.prediction').forEach(section => {
+        section.classList.remove('active');
+    });
+
+    document.querySelectorAll('.rashi-buttons button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    const selected = document.getElementById(id);
+
+    if (selected) {
+        selected.classList.add('active');
+    }
+
+    button.classList.add('active');
+
+    if (selected) {
+        selected.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+}
+</script>
+
+</body>
+</html>
