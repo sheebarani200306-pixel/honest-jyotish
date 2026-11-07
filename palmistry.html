@@ -3,14 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Personal Palmistry Scanner | Honest Jyotish</title>
 
 <style>
-
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
     margin: 0;
@@ -21,13 +17,8 @@ body {
     text-align: center;
 }
 
-h1 {
-    margin-top: 25px;
-}
-
-h2 {
-    margin-top: 20px;
-}
+h1 { margin-top: 25px; }
+h2 { margin-top: 20px; }
 
 p {
     color: #eee3d0;
@@ -54,29 +45,26 @@ button, select {
     cursor: pointer;
 }
 
-button:active {
-    transform: scale(0.97);
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
-video, canvas, #photo {
+video, #photo {
     width: 100%;
     max-width: 420px;
     border-radius: 12px;
     margin-top: 15px;
 }
 
-.hidden {
-    display: none;
-}
+.hidden { display: none; }
 
 .note {
     font-size: 13px;
     color: #c8b9a0;
 }
 
-a {
-    color: #f5cf83;
-}
+a { color: #f5cf83; }
 
 #status {
     color: #f5cf83;
@@ -98,18 +86,22 @@ a {
     accent-color: #f5cf83;
 }
 
+#result {
+    white-space: pre-wrap;
+    text-align: left;
+    overflow-wrap: anywhere;
+}
 </style>
 </head>
 
 <body>
 
 <h1>✦ HONEST JYOTISH ✦</h1>
-
 <h2>🖐 Personal Palmistry Scanner</h2>
 
 <p>
 Explore traditional palmistry through your hand.
-Capture your palm and prepare for a personalised reading.
+Capture your palm and receive a personalised reading.
 </p>
 
 <div class="card">
@@ -117,19 +109,22 @@ Capture your palm and prepare for a personalised reading.
 <h3>Step 1: Select Your Hand</h3>
 
 <select id="hand">
-    <option value="Right">Right Hand</option>
-    <option value="Left">Left Hand</option>
+    <option value="right">Right Hand</option>
+    <option value="left">Left Hand</option>
 </select>
 
 <h3>Step 2: Open Your Camera</h3>
 
 <div class="consent-box">
-    <label>
-        <input type="checkbox" id="privacyConsent">
-        I agree to let Honest Jyotish analyse my palm photograph
-        using an AI service. I understand that my photograph
-        will be sent for analysis when that feature is enabled.
-    </label>
+<label>
+<input type="checkbox" id="privacyConsent">
+
+I agree to send my palm photograph to Google's Gemini AI
+through Honest Jyotish for analysis. I understand that
+Google's free-tier terms may allow submitted content to
+be used to improve its services and reviewed by humans.
+I will not upload sensitive personal information.
+</label>
 </div>
 
 <p>
@@ -137,48 +132,29 @@ Place your palm clearly in front of the camera.
 Keep your fingers slightly separated.
 </p>
 
-<button onclick="startCamera()">
-📷 Open Camera
-</button>
+<button onclick="startCamera()">📷 Open Camera</button>
 
-<button
-id="torchButton"
-class="hidden"
-onclick="toggleTorch()">
-🔦 Flashlight ON
-</button>
+<button id="torchButton" class="hidden"
+onclick="toggleTorch()">🔦 Flashlight ON</button>
 
-<video
-id="video"
-autoplay
-playsinline
-class="hidden">
-</video>
+<video id="video" autoplay playsinline class="hidden"></video>
 
 <br>
 
-<button
-id="capture"
-class="hidden"
-onclick="takePhoto()">
-Capture Palm
-</button>
+<button id="capture" class="hidden"
+onclick="takePhoto()">Capture Palm</button>
 
 <canvas id="canvas" class="hidden"></canvas>
 
-<img
-id="photo"
-class="hidden"
-alt="Captured palm">
+<img id="photo" class="hidden" alt="Captured palm">
 
 <br>
 
-<button
-id="retake"
-class="hidden"
-onclick="retakePhoto()">
-Retake Photo
-</button>
+<button id="retake" class="hidden"
+onclick="retakePhoto()">Retake Photo</button>
+
+<button id="analyse" class="hidden"
+onclick="analysePalm()">🔮 Generate My Palm Reading</button>
 
 <p id="status"></p>
 
@@ -189,8 +165,8 @@ Retake Photo
 <h3>🔮 Your Palmistry Reading</h3>
 
 <p id="result">
-Your palm reading will appear here after we connect
-the palm-analysis system.
+Your personalised palm reading will appear here
+after you capture your palm and request analysis.
 </p>
 
 <p class="note">
@@ -206,161 +182,105 @@ a scientifically proven method of predicting the future.
 
 <script>
 
+const WORKER_URL =
+"https://honest-jyotish-palmistry.sheebarani200306.workers.dev/";
+
 let stream = null;
 let torchOn = false;
 
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const photo = document.getElementById("photo");
-
-
-// OPEN CAMERA
+const statusText = document.getElementById("status");
+const resultText = document.getElementById("result");
 
 async function startCamera() {
 
     if (!document.getElementById("privacyConsent").checked) {
-
-        document.getElementById("status").textContent =
-            "Please accept the privacy consent before opening the camera.";
-
+        statusText.textContent =
+        "Please accept the consent before opening the camera.";
         return;
     }
 
     try {
-
-        if (!navigator.mediaDevices ||
-            !navigator.mediaDevices.getUserMedia) {
-
-            throw new Error("Camera API unavailable");
-        }
-
         stopCamera();
 
+        if (!navigator.mediaDevices?.getUserMedia) {
+            throw new Error("Camera unavailable");
+        }
+
         stream = await navigator.mediaDevices.getUserMedia({
-
-            video: {
-                facingMode: "environment"
-            },
-
+            video: { facingMode: "environment" },
             audio: false
-
         });
 
         video.srcObject = stream;
-
         await video.play();
 
-        const torchButton =
-            document.getElementById("torchButton");
+        const track = stream.getVideoTracks()[0];
+        const capabilities =
+        typeof track.getCapabilities === "function"
+        ? track.getCapabilities() : {};
 
-        const track =
-            stream.getVideoTracks()[0];
-
-        let capabilities = {};
-
-        if (typeof track.getCapabilities === "function") {
-            capabilities = track.getCapabilities();
-        }
-
-        if (capabilities.torch) {
-            torchButton.classList.remove("hidden");
-        } else {
-            torchButton.classList.add("hidden");
-        }
+        document.getElementById("torchButton")
+        .classList.toggle("hidden", !capabilities.torch);
 
         video.classList.remove("hidden");
-
         document.getElementById("capture")
-            .classList.remove("hidden");
+        .classList.remove("hidden");
 
         photo.classList.add("hidden");
-
         document.getElementById("retake")
-            .classList.add("hidden");
+        .classList.add("hidden");
+        document.getElementById("analyse")
+        .classList.add("hidden");
 
-        document.getElementById("status").textContent =
-            "Camera ready! Show your full palm clearly.";
+        statusText.textContent =
+        "Camera ready! Show your full palm clearly.";
 
-    }
-
-    catch (error) {
-
+    } catch (error) {
         stopCamera();
-
-        document.getElementById("status").textContent =
-            "Camera access failed. Please allow camera permission and try again.";
-
+        statusText.textContent =
+        "Camera access failed. Please allow camera permission and try again.";
     }
-
 }
-
-
-// FLASHLIGHT ON / OFF
 
 async function toggleTorch() {
 
     const track = stream?.getVideoTracks()[0];
-
     if (!track) return;
 
     try {
-
         const capabilities =
-            typeof track.getCapabilities === "function"
-            ? track.getCapabilities()
-            : {};
+        typeof track.getCapabilities === "function"
+        ? track.getCapabilities() : {};
 
         if (!capabilities.torch) {
-
-            document.getElementById("status").textContent =
-                "Flashlight control is not supported by this camera.";
-
+            statusText.textContent =
+            "Flashlight is not supported by this camera.";
             return;
         }
 
         torchOn = !torchOn;
 
         await track.applyConstraints({
-
-            advanced: [
-                { torch: torchOn }
-            ]
-
+            advanced: [{ torch: torchOn }]
         });
 
         document.getElementById("torchButton").textContent =
-            torchOn
-            ? "🔦 Flashlight OFF"
-            : "🔦 Flashlight ON";
+        torchOn ? "🔦 Flashlight OFF" : "🔦 Flashlight ON";
 
-    }
-
-    catch (error) {
-
+    } catch (error) {
         torchOn = false;
-
-        document.getElementById("torchButton").textContent =
-            "🔦 Flashlight ON";
-
-        document.getElementById("status").textContent =
-            "Flashlight could not be activated on this device.";
-
+        statusText.textContent =
+        "Flashlight could not be activated.";
     }
-
 }
-
-
-// CAPTURE PALM PHOTO
 
 function takePhoto() {
 
-    if (!stream) return;
-
-    if (!video.videoWidth || !video.videoHeight) {
-
-        document.getElementById("status").textContent =
-            "Camera is not ready. Please try again.";
-
+    if (!stream || !video.videoWidth) {
+        statusText.textContent = "Camera is not ready.";
         return;
     }
 
@@ -368,74 +288,111 @@ function takePhoto() {
     canvas.height = video.videoHeight;
 
     canvas.getContext("2d").drawImage(
-        video,
-        0,
-        0,
-        canvas.width,
-        canvas.height
+        video, 0, 0, canvas.width, canvas.height
     );
 
-    photo.src = canvas.toDataURL("image/jpeg", 0.9);
-
+    photo.src = canvas.toDataURL("image/jpeg", 0.85);
     photo.classList.remove("hidden");
-
     video.classList.add("hidden");
 
-    canvas.classList.add("hidden");
-
-    document.getElementById("capture")
-        .classList.add("hidden");
-
-    document.getElementById("retake")
-        .classList.remove("hidden");
-
-    document.getElementById("torchButton")
-        .classList.add("hidden");
+    document.getElementById("capture").classList.add("hidden");
+    document.getElementById("retake").classList.remove("hidden");
+    document.getElementById("analyse").classList.remove("hidden");
+    document.getElementById("torchButton").classList.add("hidden");
 
     stopCamera();
 
-    document.getElementById("status").textContent =
-        document.getElementById("hand").value +
-        " palm captured successfully!";
+    statusText.textContent =
+    document.getElementById("hand").value.toUpperCase() +
+    " palm captured successfully!";
 
+    resultText.textContent =
+    "Your palm is ready for analysis. Tap Generate My Palm Reading.";
 }
-
-
-// RETAKE PHOTO
 
 function retakePhoto() {
 
     photo.classList.add("hidden");
-
-    document.getElementById("retake")
-        .classList.add("hidden");
+    document.getElementById("retake").classList.add("hidden");
+    document.getElementById("analyse").classList.add("hidden");
 
     startCamera();
-
 }
 
+async function analysePalm() {
 
-// STOP CAMERA
+    const consent =
+    document.getElementById("privacyConsent");
+
+    if (!consent.checked) {
+        statusText.textContent =
+        "Please accept the consent before sending your photograph.";
+        return;
+    }
+
+    if (!photo.src || photo.classList.contains("hidden")) {
+        statusText.textContent =
+        "Please capture your palm first.";
+        return;
+    }
+
+    const button = document.getElementById("analyse");
+
+    button.disabled = true;
+    statusText.textContent =
+    "Sending your palm securely for AI analysis. Please wait...";
+
+    resultText.textContent =
+    "Your personalised palm reading is being prepared...";
+
+    try {
+
+        const response = await fetch(WORKER_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                image: photo.src,
+                hand: document.getElementById("hand").value
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "AI analysis failed.");
+        }
+
+        resultText.textContent = data.reading;
+        statusText.textContent =
+        "Your palm reading is ready! ✨";
+
+    } catch (error) {
+
+        resultText.textContent =
+        "We could not generate your reading. Please try again.";
+
+        statusText.textContent =
+        "Error: " + error.message;
+
+    } finally {
+        button.disabled = false;
+    }
+}
 
 function stopCamera() {
 
     if (stream) {
-
-        stream.getTracks().forEach(track => {
-            track.stop();
-        });
-
+        stream.getTracks().forEach(track => track.stop());
         stream = null;
-
     }
 
     torchOn = false;
 
     document.getElementById("torchButton").textContent =
-        "🔦 Flashlight ON";
-
+    "🔦 Flashlight ON";
 }
-
 
 window.addEventListener("pagehide", stopCamera);
 
