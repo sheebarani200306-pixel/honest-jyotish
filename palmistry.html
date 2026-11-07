@@ -303,10 +303,13 @@ async function toggleTorch() {
 
     catch (error) {
 
-        torchOn = false;
+    torchOn = false;
 
-        document.getElementById("status").textContent =
-            "Unable to control the flashlight on this device.";
+    document.getElementById("torchButton").textContent =
+        "🔦 Flashlight ON";
+
+    document.getElementById("status").textContent =
+        "Flashlight error: " + error.name + " - " + error.message;
 
     }
 
