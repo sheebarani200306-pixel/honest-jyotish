@@ -91,6 +91,9 @@ Capture your palm and prepare for a personalised reading.
 <p>Place your palm clearly in front of the camera.</p>
 
 <button onclick="startCamera()">📷 Open Camera</button>
+  <button id="torchButton" class="hidden" onclick="toggleTorch()">
+🔦 Flashlight ON
+  </button>
 
 <video id="video" autoplay playsinline class="hidden"></video>
 
@@ -135,6 +138,7 @@ a scientifically proven method of predicting the future.
 <script>
 
 let stream = null;
+  let torchOn = false;
 
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
@@ -152,6 +156,16 @@ async function startCamera() {
         });
 
         video.srcObject = stream;
+      const track = stream.getVideoTracks()[0];
+const capabilities = track.getCapabilities();
+
+const torchButton = document.getElementById("torchButton");
+
+if (capabilities.torch) {
+    torchButton.classList.remove("hidden");
+} else {
+    torchButton.classList.add("hidden");
+}
 
         video.classList.remove("hidden");
         document.getElementById("capture").classList.remove("hidden");
@@ -168,6 +182,27 @@ async function startCamera() {
 }
 
 function takePhoto() {
+  async function toggleTorch() {
+    const track = stream?.getVideoTracks()[0];
+
+    if (!track) return;
+
+    try {
+        torchOn = !torchOn;
+
+        await track.applyConstraints({
+            advanced: [{ torch: torchOn }]
+        });
+
+        document.getElementById("torchButton").textContent =
+            torchOn ? "🔦 Flashlight OFF" : "🔦 Flashlight ON";
+
+    } catch (error) {
+        torchOn = false;
+        document.getElementById("status").textContent =
+            "Flashlight is not supported by this camera.";
+    }
+  }
 
     if (!stream) return;
 
