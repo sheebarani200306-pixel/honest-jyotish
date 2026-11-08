@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Personal Palmistry Scanner | Honest Jyotish</title>
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
 <style>
 * { box-sizing: border-box; }
 
@@ -91,6 +93,13 @@ a { color: #f5cf83; }
     text-align: left;
     overflow-wrap: anywhere;
 }
+
+.turnstile-box {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    min-height: 65px;
+}
 </style>
 </head>
 
@@ -125,6 +134,19 @@ Google's free-tier terms may allow submitted content to
 be used to improve its services and reviewed by humans.
 I will not upload sensitive personal information.
 </label>
+</div>
+
+<h3>Step 3: Complete Security Check</h3>
+
+<div class="turnstile-box">
+    <div
+        id="turnstileWidget"
+        class="cf-turnstile"
+        data-sitekey="0x4AAAAAAF4ajQBaYYjZNbxT"
+        data-callback="turnstileSuccess"
+        data-expired-callback="turnstileExpired"
+        data-error-callback="turnstileError">
+    </div>
 </div>
 
 <p>
@@ -187,12 +209,28 @@ const WORKER_URL =
 
 let stream = null;
 let torchOn = false;
+let turnstileToken = "";
 
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const photo = document.getElementById("photo");
-const statusText = document.getElementById("status");
-const resultText = document.getElementById("result");
+function turnstileSuccess(token) {
+    turnstileToken = token;
+    statusText.textContent = "Security check completed successfully.";
+}
+
+function turnstileExpired() {
+    turnstileToken = "";
+    statusText.textContent = "Security check expired. Please complete it again.";
+}
+
+function turnstileError() {
+    turnstileToken = "";
+    statusText.textContent = "Security check failed to load. Please refresh the page.";
+}
+
+let video = document.getElementById("video");
+let canvas = document.getElementById("canvas");
+let photo = document.getElementById("photo");
+let statusText = document.getElementById("status");
+let resultText = document.getElementById("result");
 
 async function startCamera() {
 
@@ -336,11 +374,17 @@ async function analysePalm() {
         return;
     }
 
+    if (!turnstileToken) {
+        statusText.textContent =
+        "Please complete the Cloudflare security check first.";
+        return;
+    }
+
     const button = document.getElementById("analyse");
 
     button.disabled = true;
     statusText.textContent =
-    "Sending your palm securely for AI analysis. Please wait...";
+    "Sending your palm for AI analysis. Please wait...";
 
     resultText.textContent =
     "Your personalised palm reading is being prepared...";
@@ -354,7 +398,8 @@ async function analysePalm() {
             },
             body: JSON.stringify({
                 image: photo.src,
-                hand: document.getElementById("hand").value
+                hand: document.getElementById("hand").value,
+                turnstileToken: turnstileToken
             })
         });
 
@@ -377,7 +422,15 @@ async function analysePalm() {
         "Error: " + error.message;
 
     } finally {
+
         button.disabled = false;
+
+        // Each security token can only be used once.
+        turnstileToken = "";
+
+        if (window.turnstile) {
+            turnstile.reset();
+        }
     }
 }
 
